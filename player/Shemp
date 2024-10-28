@@ -1,18 +1,18 @@
 #PLAYER
 Name Shemp~
 Id   1526675897
-LogO 1730145555
+LogO 1730159405
 Vers 5
 Prom <%hhp %mm %vmv> ~
 Race human~
 Sex  1
 Cla  3
-Levl 2
+Levl 60
 Sec  0
-Plyd 696
+Plyd 3006
 Scro 22
 Room 3001
-HMV  29 29 102 102 106 106
+HMV  49 49 122 122 106 106
 Gold 0
 Silv 0
 Exp  2088
@@ -23,17 +23,16 @@ Prac 1
 Trai 1
 Save  -1
 Alig  750
-Hit   1
 ACs 95 95 95 99
 Attr 19 13 13 13 13
 AMod 0 0 0 0 0
 Pass ShdJkE29AGHGg~
-Titl  the Recruit~
+Titl  ROCKS~
 Pnts 40
 TSex 1
 LLev 0
 HMVP 29 102 106
-Cnd  0 26 37 37
+Cnd  0 0 19 19
 Coloura     007 013 005 001 013
 Colourb     013 003 002 006 003
 Colourc     113 002 002 002 001
@@ -66,7 +65,7 @@ Gr 'rom basics'
 Gr 'warrior basics'
 Gr 'warrior default'
 Gr 'weaponsmaster'
-IMCPerm      1
+IMCPerm      2
 IMCFlags     256
 End
 
@@ -76,7 +75,7 @@ Nest 0
 Cond 0
 Wear 0
 Cost 0
-Val  0 0 189 0 0
+Val  0 0 170 0 0
 End
 
 #O
@@ -91,7 +90,7 @@ End
 Vnum 3702
 Nest 0
 Cond 0
-Wear 16
+Wear -1
 Cost 360
 End
 
@@ -109,6 +108,22 @@ Nest 0
 Cond 0
 Wear -1
 Cost 500
+End
+
+#O
+Vnum 3379
+Nest 0
+Cond 0
+Wear 16
+Cost 0
+End
+
+#O
+Vnum 3379
+Nest 0
+Cond 0
+Wear -1
+Cost 0
 End
 
 #END

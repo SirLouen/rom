@@ -8,5 +8,6 @@ services:
       - ./log:/opt/rom/log:rw
       - ./player:/opt/rom/player:rw
       - ./gods:/opt/rom/gods:rw
+      - ./area:/opt/rom/area:rw
     ports:
       - 4000:4000

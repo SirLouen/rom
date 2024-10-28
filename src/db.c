@@ -329,8 +329,11 @@ void boot_db ()
      */
     {
         FILE *fpList;
+        char strsave[MAX_INPUT_LENGTH];
+        char areasave[MAX_STRING_LENGTH];
 
-        if ((fpList = fopen (AREA_LIST, "r")) == NULL)
+        sprintf (strsave, "%s%s", AREA_DIR, AREA_LIST);
+        if ((fpList = fopen (strsave, "r")) == NULL)
         {
             perror (AREA_LIST);
             exit (1);
@@ -348,7 +351,8 @@ void boot_db ()
             }
             else
             {
-                if ((fpArea = fopen (strArea, "r")) == NULL)
+                sprintf (areasave, "%s%s", AREA_DIR, strArea);
+                if ((fpArea = fopen (areasave, "r")) == NULL)
                 {
                     perror (strArea);
                     exit (1);

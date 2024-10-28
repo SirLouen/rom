@@ -5,8 +5,8 @@
 
 CC = gcc
 RM = rm
-EXE = ../area/rom
-PROF = -O -g3
+EXE = ../bin/rom
+PROF = -g3 -O0
 
 C_FLAGS = $(PROF) -Wall
 L_FLAGS = $(PROF) -lcrypt
@@ -37,9 +37,3 @@ $(OBJ_DIR)/%.o: %.c
 
 clean:
 	$(RM) -f $(OBJ_FILES) $(EXE) *~ *.bak *.orig *.rej
-
-distro:
-	make clean
-	cd ../..
-	$(RM) -f log/*.log
-	tar zvcf quickmud-`date -I`.tar.gz QuickMUD

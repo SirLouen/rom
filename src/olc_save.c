@@ -79,8 +79,10 @@ void save_area_list ()
     AREA_DATA *pArea;
     extern HELP_AREA *had_list;
     HELP_AREA *ha;
+    char strsave[MAX_INPUT_LENGTH];
 
-    if ((fp = fopen ("area.lst", "w")) == NULL)
+    sprintf (strsave, "%s%s", AREA_DIR, AREA_LIST);
+    if ((fp = fopen (strsave, "w")) == NULL)
     {
         bug ("Save_area_list: fopen", 0);
         perror ("area.lst");
@@ -879,9 +881,11 @@ void save_other_helps (CHAR_DATA * ch)
 void save_area (AREA_DATA * pArea)
 {
     FILE *fp;
+    char strsave[MAX_INPUT_LENGTH];
 
     fclose (fpReserve);
-    if (!(fp = fopen (pArea->file_name, "w")))
+    sprintf (strsave, "%s%s", AREA_DIR, pArea->file_name);
+    if (!(fp = fopen (strsave, "w")))
     {
         bug ("Open_area: fopen", 0);
         perror (pArea->file_name);

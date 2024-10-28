@@ -933,7 +933,6 @@ void game_loop_unix (int control)
 #endif
 
 
-
 #if defined(unix)
 
 void init_descriptor (int control)
@@ -956,9 +955,17 @@ void init_descriptor (int control)
 #define FNDELAY O_NDELAY
 #endif
 
-    if (fcntl (desc, F_SETFL, FNDELAY) == -1)
+    int flags;
+    if ((flags = fcntl(desc, F_GETFL)) == -1)
     {
-        perror ("New_descriptor: fcntl: FNDELAY");
+        perror("New_descriptor: fcntl: F_GETFL");
+        return;
+    }
+    
+    flags |= O_NONBLOCK;
+    if (fcntl(desc, F_SETFL, flags) == -1)
+    {
+        perror("New_descriptor: fcntl: F_SETFL");
         return;
     }
 

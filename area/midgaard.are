@@ -2852,6 +2852,22 @@ gem~
 gem W AO
 0 0 0 0 0
 0 1 2000 P
+#3379
+maravillosa blade~
+The Maravillosa Blade~
+A magnificent blade with magical properties is here.~
+steel~
+weapon 0 AN
+sword 2 12 slash D
+26 50 2000 P
+A
+13 20
+A
+12 20
+E
+maravillosa blade~
+ Here, the most Maravillosa sword in the World
+~
 #0
 
 #ROOMS
@@ -6433,7 +6449,8 @@ O 0 3200   -1 3352  1
 O 0 3200   -1 3355  1
 O 0 3200   -1 3356  1
 O 0 3200   -1 1116
-O 0 3200 -1 1144
+O 0 3200   -1 1144
+O 0 3379    1 3001    * Place The Maravillosa Sword in Temple Square
 S
 
 #SHOPS

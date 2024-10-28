@@ -4488,7 +4488,7 @@ void do_prefix (CHAR_DATA * ch, char *argument)
 #define COPYOVER_FILE "copyover.data"
 
 /* This is the executable file */
-#define EXE_FILE      "../area/rom"
+#define EXE_FILE      "../bin/rom"
 
 /*  Copyover - Original idea: Fusion of MUD++
  *  Adapted to Diku by Erwin S. Andreasen, <erwin@pip.dknet.dk>
@@ -4791,10 +4791,13 @@ void qmconfig_read (void) {
 	bool fMatch;
 	char *word;
 	extern int mud_ansiprompt, mud_ansicolor, mud_telnetga;
+    char strsave[MAX_INPUT_LENGTH];
 
-	log_f("Loading configuration settings from ../area/qmconfig.rc.");
+	log_f("Loading configuration settings from ../area/qmconfig.rc.");   
 
-	fp = fopen("../area/qmconfig.rc","r");
+    sprintf (strsave, "%s%s", AREA_DIR, "qmconfig.rc");
+
+	fp = fopen(strsave,"r");
 	if (!fp) {
 		log_f("qmconfig.rc not found. Using compiled-in defaults.");
 		return;
