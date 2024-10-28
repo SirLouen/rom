@@ -75,7 +75,7 @@ extern AFFECT_DATA *affect_free;
  * Globals.
  */
 HELP_DATA *help_first;
-HELP_DATA *help_last;
+static HELP_DATA *help_last;
 
 HELP_AREA *had_list;
 
@@ -486,22 +486,20 @@ void load_area (FILE * fp)
 #undef KEY
 #endif
 
-#define KEY( literal, field, value )                \
-                if ( !str_cmp( word, literal ) )    \
-                {                                   \
-                    field  = value;                 \
-                    fMatch = TRUE;                  \
-                    break;                          \
-                                }
+#define KEY( literal, field, value )    \
+    if ( !str_cmp( word, literal ) )    \
+    {                                   \
+        field  = value;                 \
+        break;                          \
+    }
 
-#define SKEY( string, field )                       \
-                if ( !str_cmp( word, string ) )     \
-                {                                   \
-                    free_string( field );           \
-                    field = fread_string( fp );     \
-                    fMatch = TRUE;                  \
-                    break;                          \
-                                }
+#define SKEY( string, field )           \
+    if ( !str_cmp( word, string ) )     \
+    {                                   \
+        free_string( field );           \
+        field = fread_string( fp );     \
+        break;                          \
+    }
 
 
 
@@ -519,7 +517,7 @@ void new_load_area (FILE * fp)
 {
     AREA_DATA *pArea;
     char *word;
-    bool fMatch;
+    // bool fMatch; // Unused, marked for deletion
 
     pArea = alloc_perm (sizeof (*pArea));
     pArea->age = 15;
@@ -537,7 +535,7 @@ void new_load_area (FILE * fp)
     for (;;)
     {
         word = feof (fp) ? "End" : fread_word (fp);
-        fMatch = FALSE;
+        // Unused, marked for deletion fMatch = FALSE; // Unused, marked for deletion
 
         switch (UPPER (word[0]))
         {
@@ -557,7 +555,7 @@ void new_load_area (FILE * fp)
             case 'E':
                 if (!str_cmp (word, "End"))
                 {
-                    fMatch = TRUE;
+                    // fMatch = TRUE; // Unused, marked for deletion
                     if (area_first == NULL)
                         area_first = pArea;
                     if (area_last != NULL)
@@ -600,6 +598,7 @@ void assign_area_vnum (int vnum)
 /*
  * Snarf a help section.
  */
+__attribute__((used))
 void load_helps (FILE * fp, char *fname)
 {
     HELP_DATA *pHelp;
@@ -674,6 +673,7 @@ void load_helps (FILE * fp, char *fname)
 /*
  * Snarf a mob section.  old style
  */
+__attribute__((used))
 void load_old_mob (FILE * fp)
 {
     MOB_INDEX_DATA *pMobIndex;
@@ -821,6 +821,7 @@ void load_old_mob (FILE * fp)
 /*
  * Snarf an obj section.  old style
  */
+__attribute__((used))
 void load_old_obj (FILE * fp)
 {
     OBJ_INDEX_DATA *pObjIndex;
@@ -1006,6 +1007,7 @@ void new_reset (ROOM_INDEX_DATA * pR, RESET_DATA * pReset)
 /*
  * Snarf a reset section.
  */
+__attribute__((used))
 void load_resets (FILE * fp)
 {
     RESET_DATA *pReset;
@@ -1110,6 +1112,7 @@ void load_resets (FILE * fp)
 /*
  * Snarf a room section.
  */
+__attribute__((used))
 void load_rooms (FILE * fp)
 {
     ROOM_INDEX_DATA *pRoomIndex;
@@ -1284,6 +1287,7 @@ void load_rooms (FILE * fp)
 /*
  * Snarf a shop section.
  */
+__attribute__((used))
 void load_shops (FILE * fp)
 {
     SHOP_DATA *pShop;
@@ -1341,6 +1345,7 @@ void load_shops (FILE * fp)
 /*
  * Snarf spec proc declarations.
  */
+__attribute__((used))
 void load_specials (FILE * fp)
 {
     for (;;)
@@ -1381,6 +1386,7 @@ void load_specials (FILE * fp)
  * Has to be done after all rooms are read in.
  * Check for bad reverse exits.
  */
+__attribute__((used))
 void fix_exits (void)
 {
     extern const sh_int rev_dir[];
@@ -1516,6 +1522,7 @@ void fix_exits (void)
 /*
  * Load mobprogs section
  */
+__attribute__((used))
 void load_mobprogs (FILE * fp)
 {
     MPROG_CODE *pMprog;
@@ -1569,6 +1576,7 @@ void load_mobprogs (FILE * fp)
 /*
  *  Translate mobprog vnums pointers to real code
  */
+__attribute__((used))
 void fix_mobprogs (void)
 {
     MOB_INDEX_DATA *pMobIndex;
@@ -1599,6 +1607,7 @@ void fix_mobprogs (void)
 /*
  * Repopulate areas periodically.
  */
+__attribute__((used))
 void area_update (void)
 {
     AREA_DATA *pArea;
@@ -2000,6 +2009,7 @@ void reset_room (ROOM_INDEX_DATA * pRoom)
 /* OLC
  * Reset one area.
  */
+__attribute__((used))
 void reset_area (AREA_DATA * pArea)
 {
     ROOM_INDEX_DATA *pRoom;
@@ -2017,6 +2027,7 @@ void reset_area (AREA_DATA * pArea)
 /*
  * Create an instance of a mobile.
  */
+__attribute__((used))
 CHAR_DATA *create_mobile (MOB_INDEX_DATA * pMobIndex)
 {
     CHAR_DATA *mob;
@@ -2260,6 +2271,7 @@ CHAR_DATA *create_mobile (MOB_INDEX_DATA * pMobIndex)
 }
 
 /* duplicate a mobile exactly -- except inventory */
+__attribute__((used))
 void clone_mobile (CHAR_DATA * parent, CHAR_DATA * clone)
 {
     int i;
@@ -2340,6 +2352,7 @@ void clone_mobile (CHAR_DATA * parent, CHAR_DATA * clone)
 /*
  * Create an instance of an object.
  */
+__attribute__((used))
 OBJ_DATA *create_object (OBJ_INDEX_DATA * pObjIndex, int level)
 {
     AFFECT_DATA *paf;
@@ -2487,6 +2500,7 @@ OBJ_DATA *create_object (OBJ_INDEX_DATA * pObjIndex, int level)
 }
 
 /* duplicate an object exactly -- except contents */
+__attribute__((used))
 void clone_object (OBJ_DATA * parent, OBJ_DATA * clone)
 {
     int i;
@@ -2536,6 +2550,7 @@ void clone_object (OBJ_DATA * parent, OBJ_DATA * clone)
 /*
  * Clear a new character.
  */
+__attribute__((used))
 void clear_char (CHAR_DATA * ch)
 {
     static CHAR_DATA ch_zero;
@@ -2570,6 +2585,7 @@ void clear_char (CHAR_DATA * ch)
 /*
  * Get an extra description from a list.
  */
+__attribute__((used))
 char *get_extra_descr (const char *name, EXTRA_DESCR_DATA * ed)
 {
     for (; ed != NULL; ed = ed->next)
@@ -2638,6 +2654,7 @@ OBJ_INDEX_DATA *get_obj_index (int vnum)
  * Translates mob virtual number to its room index struct.
  * Hash table lookup.
  */
+__attribute__((used))
 ROOM_INDEX_DATA *get_room_index (int vnum)
 {
     ROOM_INDEX_DATA *pRoomIndex;
@@ -2658,6 +2675,7 @@ ROOM_INDEX_DATA *get_room_index (int vnum)
     return NULL;
 }
 
+__attribute__((used))
 MPROG_CODE *get_mprog_index (int vnum)
 {
     MPROG_CODE *prg;
@@ -2674,6 +2692,7 @@ MPROG_CODE *get_mprog_index (int vnum)
 /*
  * Read a letter from a file.
  */
+__attribute__((used))
 char fread_letter (FILE * fp)
 {
     char c;
@@ -2692,6 +2711,7 @@ char fread_letter (FILE * fp)
 /*
  * Read a number from a file.
  */
+__attribute__((used))
 int fread_number (FILE * fp)
 {
     int number;
@@ -2740,6 +2760,7 @@ int fread_number (FILE * fp)
     return number;
 }
 
+__attribute__((used))
 long fread_flag (FILE * fp)
 {
     int number;
@@ -2787,6 +2808,7 @@ long fread_flag (FILE * fp)
     return number;
 }
 
+__attribute__((used))
 long flag_convert (char letter)
 {
     long bitsum = 0;
@@ -2819,6 +2841,7 @@ long flag_convert (char letter)
  *   hash code is simply the string length.
  *   this function takes 40% to 50% of boot-up time.
  */
+__attribute__((used))
 char *fread_string (FILE * fp)
 {
     char *plast;
@@ -2923,6 +2946,7 @@ char *fread_string (FILE * fp)
     }
 }
 
+__attribute__((used))
 char *fread_string_eol (FILE * fp)
 {
     static bool char_special[256 - EOF];
@@ -3026,6 +3050,7 @@ char *fread_string_eol (FILE * fp)
 /*
  * Read to end of line (for comments).
  */
+__attribute__((used))
 void fread_to_eol (FILE * fp)
 {
     char c;
@@ -3051,6 +3076,7 @@ void fread_to_eol (FILE * fp)
 /*
  * Read one word (into static buffer).
  */
+__attribute__((used))
 char *fread_word (FILE * fp)
 {
     static char word[MAX_INPUT_LENGTH];
@@ -3180,6 +3206,7 @@ void free_mem (void *pMem, int sMem)
  * Permanent memory is never freed,
  *   pointers into it may be copied safely.
  */
+__attribute__((used))
 void *alloc_perm (int sMem)
 {
     static char *pMemPerm;
@@ -3217,6 +3244,7 @@ void *alloc_perm (int sMem)
  * Duplicate a string into dynamic memory.
  * Fread_strings are read-only and shared.
  */
+__attribute__((used))
 char *str_dup (const char *str)
 {
     char *str_new;
@@ -3239,6 +3267,7 @@ char *str_dup (const char *str)
  * Null is legal here to simplify callers.
  * Read-only shared strings are not touched.
  */
+__attribute__((used))
 void free_string (char *pstr)
 {
     if (pstr == NULL || pstr == &str_empty[0]
@@ -3250,7 +3279,7 @@ void free_string (char *pstr)
 }
 
 
-
+__attribute__((used))
 void do_areas (CHAR_DATA * ch, char *argument)
 {
     char buf[MAX_STRING_LENGTH];
@@ -3285,7 +3314,7 @@ void do_areas (CHAR_DATA * ch, char *argument)
 }
 
 
-
+__attribute__((used))
 void do_memory (CHAR_DATA * ch, char *argument)
 {
     char buf[MAX_STRING_LENGTH];
@@ -3326,6 +3355,7 @@ void do_memory (CHAR_DATA * ch, char *argument)
     return;
 }
 
+__attribute__((used))
 void do_dump (CHAR_DATA * ch, char *argument)
 {
     int count, count2, num_pcs, aff_count;
@@ -3481,6 +3511,7 @@ void do_dump (CHAR_DATA * ch, char *argument)
 /*
  * Stick a little fuzz on a number.
  */
+__attribute__((used))
 int number_fuzzy (int number)
 {
     switch (number_bits (2))
@@ -3524,6 +3555,7 @@ int number_range (int from, int to)
 /*
  * Generate a percentile roll.
  */
+__attribute__((used))
 int number_percent (void)
 {
     int percent;
@@ -3538,6 +3570,7 @@ int number_percent (void)
 /*
  * Generate a random door.
  */
+__attribute__((used))
 int number_door (void)
 {
     int door;
@@ -3547,6 +3580,7 @@ int number_door (void)
     return door;
 }
 
+__attribute__((used))
 int number_bits (int width)
 {
     return number_mm () & ((1 << width) - 1);
@@ -3570,6 +3604,7 @@ int number_bits (int width)
 static int rgiState[2 + 55];
 #endif
 
+__attribute__((used))
 void init_mm ()
 {
 #if defined (OLD_RAND)
@@ -3595,7 +3630,7 @@ void init_mm ()
 }
 
 
-
+__attribute__((used))
 long number_mm (void)
 {
 #if defined (OLD_RAND)
@@ -3625,6 +3660,7 @@ long number_mm (void)
 /*
  * Roll some dice.
  */
+__attribute__((used))
 int dice (int number, int size)
 {
     int idice;
@@ -3649,6 +3685,7 @@ int dice (int number, int size)
 /*
  * Simple linear interpolation.
  */
+__attribute__((used))
 int interpolate (int level, int value_00, int value_32)
 {
     return value_00 + level * (value_32 - value_00) / 32;
@@ -3660,6 +3697,7 @@ int interpolate (int level, int value_00, int value_32)
  * Removes the tildes from a string.
  * Used for player-entered strings that go into disk files.
  */
+__attribute__((used))
 void smash_tilde (char *str)
 {
     for (; *str != '\0'; str++)
@@ -3674,6 +3712,7 @@ void smash_tilde (char *str)
  * Removes dollar signs to keep snerts from crashing us.
  * Posted to ROM list by Kyndig. JR -- 10/15/00
  */
+__attribute__((used))
 void smash_dollar( char *str )
 {
     for( ; *str != '\0'; str++)
@@ -3752,6 +3791,7 @@ bool str_prefix (const char *astr, const char *bstr)
  * Returns TRUE is astr not part of bstr.
  *   (compatibility with historical functions).
  */
+__attribute__((used))
 bool str_infix (const char *astr, const char *bstr)
 {
     int sstr1;
@@ -3781,6 +3821,7 @@ bool str_infix (const char *astr, const char *bstr)
  * Return TRUE if astr not a suffix of bstr
  *   (compatibility with historical functions).
  */
+__attribute__((used))
 bool str_suffix (const char *astr, const char *bstr)
 {
     int sstr1;
@@ -3799,6 +3840,7 @@ bool str_suffix (const char *astr, const char *bstr)
 /*
  * Returns an initial-capped string.
  */
+__attribute__((used))
 char *capitalize (const char *str)
 {
     static char strcap[MAX_STRING_LENGTH];
@@ -3815,6 +3857,7 @@ char *capitalize (const char *str)
 /*
  * Append a string to a file.
  */
+__attribute__((used))
 void append_file (CHAR_DATA * ch, char *file, char *str)
 {
     FILE *fp;
@@ -3844,6 +3887,7 @@ void append_file (CHAR_DATA * ch, char *file, char *str)
 /*
  * Reports a bug.
  */
+__attribute__((used))
 void bug (const char *str, int param)
 {
     char buf[MAX_STRING_LENGTH];
@@ -3926,6 +3970,7 @@ void log_string (const char *str)
  *
  * -- Furey
  */
+__attribute__((used))
 void tail_chain (void)
 {
     return;
@@ -3935,6 +3980,7 @@ void tail_chain (void)
  * "The Mage's Lair" fame). Pets were being loaded with any saved
  * affects, then having those affects loaded again. -- JR 2002/01/31
  */
+__attribute__((used))
 bool check_pet_affected(int vnum, AFFECT_DATA *paf)
 {
 		  MOB_INDEX_DATA *petIndex;
@@ -3949,4 +3995,3 @@ bool check_pet_affected(int vnum, AFFECT_DATA *paf)
 
 				  return FALSE;
 }
-

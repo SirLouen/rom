@@ -1464,14 +1464,16 @@ bool is_affected (CHAR_DATA * ch, int sn)
 void affect_join (CHAR_DATA * ch, AFFECT_DATA * paf)
 {
     AFFECT_DATA *paf_old;
-    bool found;
+    // bool found; // Not used, pending deletion
 
-    found = FALSE;
+    // found = FALSE; // Not used, pending deletion
     for (paf_old = ch->affected; paf_old != NULL; paf_old = paf_old->next)
     {
         if (paf_old->type == paf->type)
         {
-            paf->level = (paf->level += paf_old->level) / 2;
+            paf->level += paf_old->level; 
+            paf->level /= 2;             
+
             paf->duration += paf_old->duration;
             paf->modifier += paf_old->modifier;
             affect_remove (ch, paf_old);
@@ -3613,7 +3615,7 @@ void all_colour (CHAR_DATA * ch, char *argument)
     ch->pcdata->fight_thit[0] = bright;
     ch->pcdata->fight_skill[0] = bright;
 
-    sprintf (buf, "All Colour settings set to %s.\n\r", buf2);
+    snprintf(buf, sizeof(buf), "All Colour settings set to %.50s.\n\r", buf2);
     send_to_char_bw (buf, ch);
 
     return;

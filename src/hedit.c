@@ -117,7 +117,7 @@ HEDIT (hedit_new)
     char arg[MIL], fullarg[MIL];
     HELP_AREA *had;
     HELP_DATA *help;
-    extern HELP_DATA *help_last;
+    static HELP_DATA *help_last;
 
     if (IS_NULLSTR (argument))
     {

@@ -145,7 +145,7 @@ void free_gen_data (GEN_DATA * gen)
 }
 
 /* stuff for recycling extended descs */
-EXTRA_DESCR_DATA *extra_descr_free;
+static EXTRA_DESCR_DATA *extra_descr_free;
 
 EXTRA_DESCR_DATA *new_extra_descr (void)
 {
@@ -668,7 +668,7 @@ HELP_AREA *new_had (void)
     return had;
 }
 
-HELP_DATA *help_free;
+static HELP_DATA *help_free;
 
 HELP_DATA *new_help (void)
 {

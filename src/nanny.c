@@ -54,7 +54,7 @@
 #include "recycle.h"
 #include "tables.h"
 
-#if    defined(macintosh) || defined(MSDOS)
+#if    defined(macintosh) || defined(MSDOS) || defined(_WIN32)
 extern const char echo_off_str[];
 extern const char echo_on_str[];
 extern const char go_ahead_str[];

@@ -673,20 +673,27 @@ char *merc_getline (char *str, char *buf)
     return str;
 }
 
-char *numlines (char *string)
+char *numlines(char *string)
 {
     int cnt = 1;
     static char buf[MAX_STRING_LENGTH * 2];
     char buf2[MAX_STRING_LENGTH], tmpb[MAX_STRING_LENGTH];
+    size_t remaining = sizeof(buf);
 
     buf[0] = '\0';
 
-    while (*string)
+    while (*string && remaining > 0)
     {
-        string = merc_getline (string, tmpb);
-        sprintf (buf2, "%2d. %s\n\r", cnt++, tmpb);
-        strcat (buf, buf2);
+        string = merc_getline(string, tmpb);
+        int written = snprintf(buf2, sizeof(buf2), "%2d. %s\n\r", cnt++, tmpb);
+        
+        if (written < 0 || written >= remaining)
+            break;  // Would overflow buffer
+            
+        strncat(buf, buf2, remaining - 1);
+        remaining -= written;
     }
 
+    buf[sizeof(buf) - 1] = '\0';  // Ensure null termination
     return buf;
 }

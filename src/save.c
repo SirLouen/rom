@@ -108,7 +108,9 @@ void save_char_obj (CHAR_DATA * ch)
     FILE *fp;
 
     if (IS_NPC (ch))
+    {
         return;
+    }
 
 	/*
 	 * Fix by Edwin. JR -- 10/15/00
@@ -647,8 +649,6 @@ void fwrite_obj (CHAR_DATA * ch, OBJ_DATA * obj, FILE * fp, int iNest)
     return;
 }
 
-
-
 /*
  * Load a char and inventory into a new ch structure.
  */
@@ -802,7 +802,12 @@ bool load_char_obj (DESCRIPTOR_DATA * d, char *name)
     if ((fp = fopen (strsave, "r")) != NULL)
     {
         fclose (fp);
-        sprintf (buf, "gzip -dfq %s", strsave);
+        size_t cmd_len = strlen("gzip -dfq ") + strlen(strsave) + 1;
+        if (cmd_len >= sizeof(buf)) {
+            // TODO: Handle error - command too long
+            return FALSE;
+        }
+        snprintf(buf, sizeof(buf), "gzip -dfq  %.80s", strsave);
         system (buf);
     }
 #endif

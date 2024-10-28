@@ -613,7 +613,7 @@ void do_socials (CHAR_DATA * ch, char *argument)
 
     for (iSocial = 0; social_table[iSocial].name[0] != '\0'; iSocial++)
     {
-        sprintf (buf, "%-12s", social_table[iSocial].name);
+        snprintf (buf, sizeof(buf), "%-12.12s", social_table[iSocial].name);
         send_to_char (buf, ch);
         if (++col % 6 == 0)
             send_to_char ("\n\r", ch);
@@ -2556,10 +2556,12 @@ void do_title (CHAR_DATA * ch, char *argument)
 	 * a centralized user input sanitization scheme. FIXME!      *
 	 * JR -- 10/15/00                                            */
 
-    if (strlen (argument) > 45)
+    i = strlen(argument);
+
+    if (i > 45)
         argument[45] = '\0';
 
-	i = strlen(argument);
+	
     if (argument[i-1] == '{' && argument[i-2] != '{')
 		argument[i-1] = '\0';
 

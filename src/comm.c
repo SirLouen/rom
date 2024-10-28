@@ -101,7 +101,7 @@ extern int malloc_verify args ((void));
 /*
  * Socket and TCP/IP stuff.
  */
-#if    defined(macintosh) || defined(MSDOS)
+#if    defined(macintosh) || defined(MSDOS) || defined(_WIN32)
 const char echo_off_str[] = { '\0' };
 const char echo_on_str[] = { '\0' };
 const char go_ahead_str[] = { '\0' };
@@ -176,7 +176,7 @@ int    listen        args( ( int s, int backlog ) );
 */
 
 int close args ((int fd));
-int gettimeofday args ((struct timeval * tp, struct timezone * tzp));
+// int gettimeofday args ((struct timeval * tp, struct timezone * tzp));
 /* int    read        args( ( int fd, char *buf, int nbyte ) ); */
 int select args ((int width, fd_set * readfds, fd_set * writefds,
                   fd_set * exceptfds, struct timeval * timeout));
@@ -2128,6 +2128,9 @@ void show_string (struct descriptor_data *d, char *input)
     int lines = 0, toggle = 1;
     int show_lines;
 
+    // Add debug log
+    // log_string("Show_string received input: %s", input);
+
     one_argument (input, buf);
     if (buf[0] != '\0')
     {
@@ -2155,7 +2158,8 @@ void show_string (struct descriptor_data *d, char *input)
         {
             *scan = '\0';
             write_to_buffer (d, buffer, strlen (buffer));
-            for (chk = d->showstr_point; isspace (*chk); chk++);
+
+            for (chk = d->showstr_point; isspace (*chk); chk++)
             {
                 if (!*chk)
                 {
@@ -2167,6 +2171,7 @@ void show_string (struct descriptor_data *d, char *input)
                     d->showstr_point = 0;
                 }
             }
+
             return;
         }
     }
@@ -2199,7 +2204,7 @@ void act_new (const char *format, CHAR_DATA * ch, const void *arg1,
     char *point;
     char *pbuff;
     char buffer[MSL * 2];
-    bool fColour = FALSE;
+    // bool fColour = FALSE; // Useless assignment, marked for deletion
 
 
     /*
@@ -2252,7 +2257,7 @@ void act_new (const char *format, CHAR_DATA * ch, const void *arg1,
                 *point++ = *str++;
                 continue;
             }
-            fColour = TRUE;
+            // fColour = TRUE; // Useless assignment, marked for deletion
             ++str;
             i = " <@@@> ";
 

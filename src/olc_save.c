@@ -923,18 +923,21 @@ void do_asave (CHAR_DATA * ch, char *argument)
 {
     char arg1[MAX_INPUT_LENGTH];
     AREA_DATA *pArea;
-    FILE *fp;
-    int value, sec;
+    // FILE *fp; // Not used, pending deletion
+    int value;
+    // int sec; // Not used, pending revision
 
-    fp = NULL;
+    // fp = NULL; // Not used, pending deletion
 
-    if (!ch)                    /* Do an autosave */
+    /*
+     sec variable is not being applied, pending revision. 
+    if (!ch)                   // Do an autosave
         sec = 9;
     else if (!IS_NPC (ch))
         sec = ch->pcdata->security;
     else
         sec = 0;
-
+    */
 /*    {
     save_area_list();
     for( pArea = area_first; pArea; pArea = pArea->next )

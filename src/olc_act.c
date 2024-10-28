@@ -880,7 +880,7 @@ AEDIT (aedit_builder)
 
     name[0] = UPPER (name[0]);
 
-    if (strstr (pArea->builders, name) != '\0')
+    if (strstr (pArea->builders, name) != NULL)
     {
         pArea->builders = string_replace (pArea->builders, name, "\0");
         pArea->builders = string_unpad (pArea->builders);
@@ -896,7 +896,7 @@ AEDIT (aedit_builder)
     else
     {
         buf[0] = '\0';
-        if (strstr (pArea->builders, "None") != '\0')
+        if (strstr (pArea->builders, "None") != NULL)
         {
             pArea->builders = string_replace (pArea->builders, "None", "\0");
             pArea->builders = string_unpad (pArea->builders);
@@ -3232,6 +3232,7 @@ OEDIT (oedit_ed)
     EXTRA_DESCR_DATA *ed;
     char command[MAX_INPUT_LENGTH];
     char keyword[MAX_INPUT_LENGTH];
+    EXTRA_DESCR_DATA *ped = NULL;
 
     EDIT_OBJ (ch, pObj);
 
@@ -3293,7 +3294,7 @@ OEDIT (oedit_ed)
 
     if (!str_cmp (command, "delete"))
     {
-        EXTRA_DESCR_DATA *ped = NULL;
+        
 
         if (keyword[0] == '\0')
         {
@@ -3329,7 +3330,6 @@ OEDIT (oedit_ed)
 
     if (!str_cmp (command, "format"))
     {
-        EXTRA_DESCR_DATA *ped = NULL;
 
         if (keyword[0] == '\0')
         {

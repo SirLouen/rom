@@ -2318,6 +2318,12 @@ char *    crypt        args( ( const char *key, const char *salt ) );
 #define NULL_FILE       "proto.are"         /* To reserve one stream   */
 #endif
 
+#if defined(_WIN32)
+#define PLAYER_DIR      ""                  /* Player files            */
+#define TEMP_FILE       "romtmp"
+#define NULL_FILE       "proto.are"         /* To reserve one stream   */
+#endif
+
 #if defined(MSDOS)
 #define PLAYER_DIR      ""                   /* Player files           */
 #define TEMP_FILE       "romtmp"
