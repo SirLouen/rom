@@ -20,6 +20,7 @@
 #define EDIT_HELP(ch, help)    ( help = (HELP_DATA *) ch->desc->pEdit )
 
 extern HELP_AREA *had_list;
+HELP_DATA *help_last;
 
 const struct olc_cmd_type hedit_table[] = {
 /*    {    command        function    }, */
@@ -117,7 +118,6 @@ HEDIT (hedit_new)
     char arg[MIL], fullarg[MIL];
     HELP_AREA *had;
     HELP_DATA *help;
-    static HELP_DATA *help_last;
 
     if (IS_NULLSTR (argument))
     {

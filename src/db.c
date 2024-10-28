@@ -70,12 +70,13 @@ extern CHAR_DATA *char_free;
 extern DESCRIPTOR_DATA *descriptor_free;
 extern PC_DATA *pcdata_free;
 extern AFFECT_DATA *affect_free;
+extern HELP_DATA *help_last;
 
 /*
  * Globals.
  */
 HELP_DATA *help_first;
-static HELP_DATA *help_last;
+
 
 HELP_AREA *had_list;
 
@@ -594,6 +595,7 @@ void assign_area_vnum (int vnum)
     }
     return;
 }
+
 
 /*
  * Snarf a help section.

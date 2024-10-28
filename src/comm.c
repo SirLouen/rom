@@ -2120,7 +2120,7 @@ void page_to_char (const char *txt, CHAR_DATA * ch)
 }
 
 /* string pager */
-void show_string (struct descriptor_data *d, char *input)
+void show_string(struct descriptor_data *d, char *input)
 {
     char buffer[4 * MAX_STRING_LENGTH];
     char buf[MAX_INPUT_LENGTH];
@@ -2128,18 +2128,20 @@ void show_string (struct descriptor_data *d, char *input)
     int lines = 0, toggle = 1;
     int show_lines;
 
-    // Add debug log
-    // log_string("Show_string received input: %s", input);
-
-    one_argument (input, buf);
-    if (buf[0] != '\0')
-    {
-        if (d->showstr_head)
-        {
-            free_mem (d->showstr_head, strlen (d->showstr_head));
-            d->showstr_head = 0;
+    one_argument(input, buf);
+    
+    // Check if we have input and need to clear the buffer
+    if (buf[0] != '\0') {
+        if (d->showstr_head) {
+            free_mem(d->showstr_head, strlen(d->showstr_head));
+            d->showstr_head = NULL;  // Set to NULL after freeing
         }
-        d->showstr_point = 0;
+        d->showstr_point = NULL;  // Also set point to NULL
+        return;
+    }
+
+    // If we don't have a valid string to show, return
+    if (!d->showstr_point || !d->showstr_head) {
         return;
     }
 
@@ -2148,34 +2150,28 @@ void show_string (struct descriptor_data *d, char *input)
     else
         show_lines = 0;
 
-    for (scan = buffer;; scan++, d->showstr_point++)
-    {
-        if (((*scan = *d->showstr_point) == '\n' || *scan == '\r')
-            && (toggle = -toggle) < 0)
+    for (scan = buffer;; scan++, d->showstr_point++) {
+        if (((*scan = *d->showstr_point) == '\n' || *scan == '\r') && (toggle = -toggle) < 0)
             lines++;
-
-        else if (!*scan || (show_lines > 0 && lines >= show_lines))
-        {
+        else if (!*scan || (show_lines > 0 && lines >= show_lines)) {
             *scan = '\0';
-            write_to_buffer (d, buffer, strlen (buffer));
-
-            for (chk = d->showstr_point; isspace (*chk); chk++)
-            {
-                if (!*chk)
-                {
-                    if (d->showstr_head)
-                    {
-                        free_mem (d->showstr_head, strlen (d->showstr_head));
-                        d->showstr_head = 0;
-                    }
-                    d->showstr_point = 0;
+            write_to_buffer(d, buffer, strlen(buffer));
+            
+            // Check if we're at the end of the string
+            for (chk = d->showstr_point; isspace(*chk); chk++);
+            
+            if (!*chk) {
+                if (d->showstr_head) {
+                    free_mem(d->showstr_head, strlen(d->showstr_head));
+                    d->showstr_head = NULL;  // Set to NULL after freeing
                 }
+                d->showstr_point = NULL;  // Also set point to NULL
+                return;
             }
-
+            
             return;
         }
     }
-    return;
 }
 
 

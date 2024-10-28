@@ -668,7 +668,7 @@ HELP_AREA *new_had (void)
     return had;
 }
 
-static HELP_DATA *help_free;
+HELP_DATA *help_free;
 
 HELP_DATA *new_help (void)
 {
