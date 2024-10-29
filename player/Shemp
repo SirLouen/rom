@@ -1,7 +1,7 @@
 #PLAYER
 Name Shemp~
 Id   1526675897
-LogO 1730159405
+LogO 1730161816
 Vers 5
 Prom <%hhp %mm %vmv> ~
 Race human~
@@ -9,12 +9,12 @@ Sex  1
 Cla  3
 Levl 60
 Sec  0
-Plyd 3006
+Plyd 5343
 Scro 22
-Room 3001
-HMV  49 49 122 122 106 106
-Gold 0
-Silv 0
+Room 3026
+HMV  49 49 122 122 91 106
+Gold 1000
+Silv 1000
 Exp  2088
 Act  QT
 Comm DNOP
@@ -30,7 +30,7 @@ Pass ShdJkE29AGHGg~
 Titl  ROCKS~
 Pnts 40
 TSex 1
-LLev 0
+LLev 1
 HMVP 29 102 106
 Cnd  0 0 19 19
 Coloura     007 013 005 001 013

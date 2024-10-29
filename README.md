@@ -1,71 +1,97 @@
-QuickMUD is derived from ROM 2.4b6, Merc 2.1 and DikuMUD
-==============
+
+# ROM Modernization Project
+
+A modernized version of ROM24b6/QuickMUD, restructured and updated to work with modern Linux systems and designed to be more maintainable and extensible for future development.
 
 ## Introduction
 
-QuickMUD / ROM is a "[multi-user dungeon](https://en.wikipedia.org/wiki/MUD)", a text-based MMORPG. ROM is well-known for its fast-paced and exciting combat system. It also happens to be the initial codebase for [Carrion Fields](http://www.carrionfields.net/), the greatest MUD of all time.
+This ROM Modernization Project has been forked from the [QuickMUD project](https://github.com/avinson/rom24-quickmud), which is a modernized version of the ROM 2.4b6 codebase. The goal of this project is to restructure and update the codebase to work with modern Linux systems and to make it more maintainable and extensible for future development.
 
-## Docker Image
+## Technical Requirements
 
-You can run the pre-built docker image with the following command:
+- Docker
 
-```docker run -d -p 4000:4000 avinson/rom```
+## Installation and Setup
 
-After that, connect like this:
+1. Clone the repository:
+```bash
+git clone https://github.com/Sirlouen/rom.git
+cd rom
+```
 
-```telnet localhost 4000```
+2. Create necessary directories:
+```bash
+docker compose up -d
+```
 
-If you have docker-compose available, a simple `docker-compose up` will start the
-container and mount the player and log directories for easier saving/editing of
-player files.
+3. Connect:
+Now you can connect to the MUD using a MUD client or telnet, through the port 4000
+You are shipped by default with the first immortal account by default. 
+It's a level 60 Immortal named `Shemp` is included with a password of `psswrd`.
 
-## First Immortal
+## Recent Changes
 
-A level 2 character named Shemp is included with a password of `psswrd`. You
-can edit this file to create an immortal character or follow the instructions
-below.
+### Directory Structure
+The codebase has been reorganized for better maintainability:
 
------
+rom24-quickmud/
+├── area/ # Game areas and configuration
+├── bin/ # Executables
+│ ├── rom
+│ └── startup
+├── doc/ # Documentation
+├── gods/ # Immortal data
+├── log/ # Server logs
+├── player/ # Player files
+└──  src/ # Source code
 
-To make your first immortal character, just start as a mortal
-character, play at least as far as level 2, and then edit the
-player file and change your level.  (After the first immortal,
-you can advance the rest)
+### First Updates
+1. **Path Restructuring**
+   - Moved executables to `bin/` directory
+   - Updated all relative paths
+   - Fixed path resolution issues
 
-QuickMUD is a Rom24b6 codebase with the following major features added:
+2. **Bug Fixes**
+   - Fixed FNDELAY deprecated flag with O_NONBLOCK
+   - Resolved segmentation faults in configuration loading
+   - Fixed copyover functionality
+   - Updated socket handling
 
-* OLC 1.81
-* Lope's Color 2.0
-* Erwin's Copyover
-* Erwin's Noteboard
-* Color Login
+3. **Code Modernization**
+   - Updated deprecated system calls
+   - Enhanced error handling
+   - Improved memory management
+   - Added debug logging capabilities
 
-It is still basically a "stock" ROM server.  The  functionality  of the
-code hasn't been modified much except for the addition of  OLC. Changes
-are pretty much limited to cosmetic features, like color login.  If you
-want to start your own ROM based server, this code can give you a quick
-start with some standard 'extra features' already implemented. However,
-for the sake of the mudding community at  large,  don't  just  download
-this code, compile it, and advertise it on MUD websites  as  "a  highly
-modified  ROM  codebase".  Spend  some  time  developing  it. The world
-doesn't need another cookie-cutter MUD.
+### Future Plans
 
------
+1. **Code Refactoring**
+   - Refactor the codebase for better readability and maintainability
+   - Implement modern C++ features for better performance and safety
 
-This is the ROM 2.4 beta version of Merc 2.1 base code.
-Please read the file in /Rom24/doc called rom.license before using
-this program.
+2. **Implement a better configuration system**
+   - Implement a configuration system that allows for easier customization
+   - Add support for configuration files in JSON or YAML format
 
------
+3. **Add proper loggin and monitoring**
+   - Implement a logging system that allows for better monitoring and debugging
+   - Add support for log rotation and log levels
 
-Merc Diku Mud is a Diku Mud with many enhancements and contributions.  See our
-'contrib.txt' and 'help merc' for acknowledgements.  Send us your contribution,
-and you'll be in there too!
+Any other suggestions are welcome!
 
-Enjoy our mud.  May your visit here be ... Mercenary.
+## License
 
-This is the 2.1 production release of Merc.
+This is based the ROM 2.4b6 version of Merc 2.1 and DikuMUD base code. Please read the licensing in the doc directory for more information.
 
------
+All the changes and code added to the ROM Modernization Project are licensed under the MIT License.
 
-See other READMEs in the repo for full info and licenses.
+## Acknowledgements
+
+- Sebastian Hammer, Michael Seifert, Hans Henrik Starfeldt, Tom Madsen and Katja Nyboe for DikuMUD
+ - Hatchet, Furey, and Kahn for Merc 2.1 codebase
+- Russ Taylor, Geoff Wong and Brian Moore for ROM 2.4 codebase
+- Erwin S. Andreasen for the Copyover Patch, Noteboard AND OLC
+- Lotherius for QuickMUD implementation
+- Lope, for the Color Patch
+- M. Nylander for the MOBProgram Patch
+- All the other coders who have contributed to multiple patches and snippets all over the code, if you feel you should be mentioned here, please let me know.

@@ -479,6 +479,7 @@ ACS 0 -200 0
 BJNQ 0 0 C
 stand stand male 18
 0 0 medium 0
+M bribe 3004 10~
 #3064
 drunk~
 the drunk~
@@ -953,6 +954,20 @@ ACHS PQ -100 0
 EFJN 0 0 0
 stand stand either 100
 0 0 medium 0
+#0
+
+#MOBPROGS
+#3004
+if sex $n < 2
+  say Thank ye, kind sir!
+else
+  say Thank ye, milady!
+endif
+if level $n < 5
+  say Since you have money in abundance, let me share your wealth!
+  mob kill $n
+endif
+~
 #0
 
 #OBJECTS
