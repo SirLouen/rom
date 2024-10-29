@@ -34,16 +34,26 @@ It's a level 60 Immortal named `Shemp` is included with a password of `psswrd`.
 ### Directory Structure
 The codebase has been reorganized for better maintainability:
 
-rom24-quickmud/
+rom/
+
 ├── area/ # Game areas and configuration
+
 ├── bin/ # Executables
+
 │ ├── rom
+
 │ └── startup
+
 ├── doc/ # Documentation and Licensing
+
 ├── gods/ # Immortal data
+
 ├── imc/ # IMC2 files
+
 ├── log/ # Server logs
+
 ├── player/ # Player files
+
 └── src/ # Source code
 
 ### First Updates
