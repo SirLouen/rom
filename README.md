@@ -39,11 +39,12 @@ rom24-quickmud/
 ├── bin/ # Executables
 │ ├── rom
 │ └── startup
-├── doc/ # Documentation
+├── doc/ # Documentation and Licensing
 ├── gods/ # Immortal data
+├── imc/ # IMC2 files
 ├── log/ # Server logs
 ├── player/ # Player files
-└──  src/ # Source code
+└── src/ # Source code
 
 ### First Updates
 1. **Path Restructuring**
