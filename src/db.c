@@ -1563,7 +1563,6 @@ void fix_exits (void)
 /*
  * Load mobprogs section
  */
-__attribute__((used))
 void load_mobprogs (FILE * fp)
 {
     PROG_CODE *pMprog;
@@ -4115,6 +4114,8 @@ void load_objprogs( FILE *fp )
         }
         top_oprog_index++;
     }
+
+    log_f("Loaded %d objprogs.", top_oprog_index);
     return;
 }
 
@@ -4164,6 +4165,7 @@ void load_roomprogs( FILE *fp )
         }
         top_rprog_index++;
     }
+    log_f("Loaded %d roomprogs.", top_rprog_index);
     return;
 }
 
