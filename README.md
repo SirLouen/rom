@@ -123,5 +123,6 @@ All the changes and code added to the ROM Modernization Project are licensed und
 - Lope, for the Color Patch
 - Markku Nylander, KERMiT and N'atas-Ha for the MOB Program Patch
 - Ralgha for the OBJ and ROOM Program Patch
+- KaVir for the MSDP Protocol Snippet
 
 And all the other coders who have contributed to multiple patches and snippets all over the code, if you feel you should be mentioned here, please let me know.

@@ -231,7 +231,7 @@ void nanny (DESCRIPTOR_DATA * d, char *argument)
             {
                 /* Old player */
                 send_to_desc ("Password: ", d);
-                write_to_buffer (d, echo_off_str, 0);
+                ProtocolNoEcho( d, true );
                 d->connected = CON_GET_OLD_PASSWORD;
                 return;
             }
@@ -273,7 +273,7 @@ void nanny (DESCRIPTOR_DATA * d, char *argument)
                 return;
             }
 
-            write_to_buffer (d, echo_on_str, 0);
+            ProtocolNoEcho( d, false );
 
             if (check_playing (d, ch->name))
                 return;
@@ -356,9 +356,8 @@ void nanny (DESCRIPTOR_DATA * d, char *argument)
             {
                 case 'y':
                 case 'Y':
-                    sprintf (buf,
-                             "New character.\n\rGive me a password for %s: %s",
-                             ch->name, echo_off_str);
+                    ProtocolNoEcho( d, true );
+                    sprintf( buf, "New character.\n\rGive me a password for %s: ", ch->name );
                     send_to_desc (buf, d);
                     d->connected = CON_GET_NEW_PASSWORD;
                     if (ch->desc->ansi)
@@ -423,7 +422,7 @@ void nanny (DESCRIPTOR_DATA * d, char *argument)
                 return;
             }
 
-            write_to_buffer (d, echo_on_str, 0);
+            ProtocolNoEcho( d, false );
             send_to_desc ("The following races are available:\n\r  ", d);
             for (race = 1; race_table[race].name != NULL; race++)
             {
@@ -757,6 +756,8 @@ void nanny (DESCRIPTOR_DATA * d, char *argument)
             ch->next = char_list;
             char_list = ch;
             d->connected = CON_PLAYING;
+            MXPSendTag( d, "<VERSION>" );
+
             reset_char (ch);
 
             if (ch->level == 0)
@@ -802,6 +803,8 @@ void nanny (DESCRIPTOR_DATA * d, char *argument)
             }
 
             act ("$n has entered the game.", ch, NULL, NULL, TO_ROOM);
+            MXPSendTag( d, "<VERSION>" );
+
             do_function (ch, &do_look, "auto");
 
             wiznet ("$N has left real life behind.", ch, NULL,
