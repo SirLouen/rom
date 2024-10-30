@@ -336,7 +336,7 @@ void load_mobiles (FILE * fp)
             }
             else if (letter == 'M')
             {
-                MPROG_LIST *pMprog;
+                PROG_LIST *pMprog;
                 char *word;
                 int trigger = 0;
 
@@ -578,6 +578,27 @@ void load_objects (FILE * fp)
                 ed->next = pObjIndex->extra_descr;
                 pObjIndex->extra_descr = ed;
                 top_ed++;
+            }
+
+            else if ( letter == 'O' )
+            {
+                PROG_LIST *pOprog;
+                char *word;
+                int trigger = 0;
+
+                pOprog			= alloc_perm(sizeof(*pOprog));
+                word			= fread_word( fp );
+                if ( !(trigger = flag_lookup( word, oprog_flags )) )
+                {
+                    bug( "OBJprogs: invalid trigger.",0);
+                    exit(1);
+                }
+                SET_BIT( pObjIndex->oprog_flags, trigger );
+                pOprog->trig_type	= trigger;
+                pOprog->vnum	 	= fread_number( fp );
+                pOprog->trig_phrase	= fread_string( fp );
+                pOprog->next		= pObjIndex->oprogs;
+                pObjIndex->oprogs	= pOprog;
             }
 
             else

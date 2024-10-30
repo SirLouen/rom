@@ -1,0 +1,193 @@
+Wed Oct 30 00:33:55 2024 :: Loading configuration settings from ../area/qmconfig.rc.
+Wed Oct 30 00:33:55 2024 :: Set IP address to 0.0.0.0
+Wed Oct 30 00:33:55 2024 :: Loading area immort.are
+Wed Oct 30 00:33:55 2024 :: Loading area ofcol2.are
+Wed Oct 30 00:33:55 2024 :: Loading area shire.are
+Wed Oct 30 00:33:55 2024 :: Loading area midgaard.are
+Wed Oct 30 00:33:55 2024 :: Loaded 1 mobprogs.
+Wed Oct 30 00:33:55 2024 :: Loading area plains.are
+Wed Oct 30 00:33:55 2024 :: Loading area haon.are
+Wed Oct 30 00:33:55 2024 :: Loading area air.are
+Wed Oct 30 00:33:55 2024 :: Loading area arachnos.are
+Wed Oct 30 00:33:55 2024 :: Loading area astral.are
+Wed Oct 30 00:33:55 2024 :: Loading area canyon.are
+Wed Oct 30 00:33:55 2024 :: Loading area catacomb.are
+Wed Oct 30 00:33:55 2024 :: Loading area chapel.are
+Wed Oct 30 00:33:55 2024 :: Loading area daycare.are
+Wed Oct 30 00:33:55 2024 :: Loading area draconia.are
+Wed Oct 30 00:33:55 2024 :: Loading area dream.are
+Wed Oct 30 00:33:55 2024 :: Loading area drow.are
+Wed Oct 30 00:33:55 2024 :: Loading area thalos.are
+Wed Oct 30 00:33:55 2024 :: Loading area dwarven.are
+Wed Oct 30 00:33:55 2024 :: Loading area dylan.are
+Wed Oct 30 00:33:55 2024 :: Loading area eastern.are
+Wed Oct 30 00:33:55 2024 :: Loading area galaxy.are
+Wed Oct 30 00:33:55 2024 :: Loading area gnome.are
+Wed Oct 30 00:33:55 2024 :: Loading area grave.are
+Wed Oct 30 00:33:55 2024 :: Loading area grove.are
+Wed Oct 30 00:33:55 2024 :: Loading area hitower.are
+Wed Oct 30 00:33:55 2024 :: Loading area hood.are
+Wed Oct 30 00:33:55 2024 :: Loading area limbo.are
+Wed Oct 30 00:33:55 2024 :: Loading area mahntor.are
+Wed Oct 30 00:33:55 2024 :: Loading area marsh.are
+Wed Oct 30 00:33:55 2024 :: Loading area mega1.are
+Wed Oct 30 00:33:55 2024 :: Loading area midennir.are
+Wed Oct 30 00:33:55 2024 :: Loading area mirror.are
+Wed Oct 30 00:33:55 2024 :: Loading area mobfact.are
+Wed Oct 30 00:33:55 2024 :: Loading area moria.are
+Wed Oct 30 00:33:55 2024 :: Loading area newthalos.are
+Wed Oct 30 00:33:55 2024 :: Loading area nirvana.are
+Wed Oct 30 00:33:55 2024 :: Loading area ofcol.are
+Wed Oct 30 00:33:55 2024 :: Loading area olympus.are
+Wed Oct 30 00:33:55 2024 :: Loading area pyramid.are
+Wed Oct 30 00:33:55 2024 :: Loading area quifael.are
+Wed Oct 30 00:33:55 2024 :: Loading area sewer.are
+Wed Oct 30 00:33:55 2024 :: Loading area redferne.are
+Wed Oct 30 00:33:55 2024 :: Loading area school.are
+Wed Oct 30 00:33:55 2024 :: Loading area smurf.are
+Wed Oct 30 00:33:55 2024 :: Loading area tohell.are
+Wed Oct 30 00:33:55 2024 :: Loading area trollden.are
+Wed Oct 30 00:33:55 2024 :: Loading area valley.are
+Wed Oct 30 00:33:55 2024 :: Loading area wyvern.are
+Wed Oct 30 00:33:55 2024 :: [*****] BUG: Fix_exits: 10525:1 -> 10535:3 -> 10534.
+Wed Oct 30 00:33:55 2024 :: [*****] BUG: Fix_exits: 3458:2 -> 3472:0 -> 10401.
+Wed Oct 30 00:33:55 2024 :: [*****] BUG: Fix_exits: 8705:4 -> 8706:5 -> 8708.
+Wed Oct 30 00:33:55 2024 :: [*****] BUG: Fix_exits: 8717:2 -> 8719:0 -> 8718.
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9217)(Level  7) an elemental rod of earthquake
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9217)(Level  3) a small rock
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9218)(Level 27) elemental wand of wind and air
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9234)(Level 13) an alchemist
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9216)(Level 25) an ice staff
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9214)(Level  8) a puddle
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9227)(Level 28) an icicle
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9228)(Level 24) the Ice Bandit
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9215)(Level 16) elemental wand of fire
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9215)(Level  4) a flame
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9215)(Level 16) elemental wand of fire
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9215)(Level  4) a flame
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9218)(Level 27) elemental wand of wind and air
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9218)(Level  4) a small spark
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9218)(Level 27) elemental wand of wind and air
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9225)(Level  2) an eddie
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  9216)(Level 25) an ice staff
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  9235)(Level 16) a baby rainbow dragon
+Wed Oct 30 00:33:55 2024 :: Check Levels:
+Wed Oct 30 00:33:55 2024 ::   Object: (VNUM  8010)(Level  5) a wet noodle
+Wed Oct 30 00:33:55 2024 ::      Mob: (VNUM  8002)(Level 17) a Futsie
+Wed Oct 30 00:33:55 2024 :: ROM is ready to rock on port 4000 (0.0.0.0).
+Wed Oct 30 00:33:55 2024 :: IMC: Loading IMC2 command table...
+Wed Oct 30 00:33:55 2024 :: IMC: Loading IMC2 network data...
+Wed Oct 30 00:33:55 2024 :: IMC: Loading IMC2 help file...
+Wed Oct 30 00:33:55 2024 :: IMC: Loading IMC2 color table...
+Wed Oct 30 00:33:55 2024 :: IMC: Loading IMC2 who template...
+Wed Oct 30 00:33:55 2024 :: IMC: IMC2 network data loaded. Autoconnect not set. IMC2 will need to be connected manually.
+Wed Oct 30 00:33:58 2024 :: Sock.sinaddr:  172.18.0.1
+Wed Oct 30 00:34:02 2024 :: Loading Shemp.
+Wed Oct 30 00:34:04 2024 :: Shemp@172.18.0.1 has connected.
+Wed Oct 30 00:34:07 2024 :: [*****] BUG: ACT trigger fired: vnum '3001'
+Wed Oct 30 00:34:07 2024 :: [*****] BUG: ACT trigger fired: vnum '3001'
+Wed Oct 30 00:35:46 2024 :: [*****] BUG: ACT trigger fired: vnum '3001'
+Wed Oct 30 00:36:02 2024 :: Log Shemp: copyover
+Wed Oct 30 00:36:02 2024 :: Loading configuration settings from ../area/qmconfig.rc.
+Wed Oct 30 00:36:02 2024 :: Loading area immort.are
+Wed Oct 30 00:36:02 2024 :: Loading area ofcol2.are
+Wed Oct 30 00:36:02 2024 :: Loading area shire.are
+Wed Oct 30 00:36:02 2024 :: Loading area midgaard.are
+Wed Oct 30 00:36:02 2024 :: Loaded 1 mobprogs.
+Wed Oct 30 00:36:02 2024 :: Loading area plains.are
+Wed Oct 30 00:36:02 2024 :: Loading area haon.are
+Wed Oct 30 00:36:02 2024 :: Loading area air.are
+Wed Oct 30 00:36:02 2024 :: Loading area arachnos.are
+Wed Oct 30 00:36:02 2024 :: Loading area astral.are
+Wed Oct 30 00:36:02 2024 :: Loading area canyon.are
+Wed Oct 30 00:36:02 2024 :: Loading area catacomb.are
+Wed Oct 30 00:36:02 2024 :: Loading area chapel.are
+Wed Oct 30 00:36:02 2024 :: Loading area daycare.are
+Wed Oct 30 00:36:02 2024 :: Loading area draconia.are
+Wed Oct 30 00:36:02 2024 :: Loading area dream.are
+Wed Oct 30 00:36:02 2024 :: Loading area drow.are
+Wed Oct 30 00:36:02 2024 :: Loading area thalos.are
+Wed Oct 30 00:36:02 2024 :: Loading area dwarven.are
+Wed Oct 30 00:36:02 2024 :: Loading area dylan.are
+Wed Oct 30 00:36:02 2024 :: Loading area eastern.are
+Wed Oct 30 00:36:02 2024 :: Loading area galaxy.are
+Wed Oct 30 00:36:02 2024 :: Loading area gnome.are
+Wed Oct 30 00:36:02 2024 :: Loading area grave.are
+Wed Oct 30 00:36:02 2024 :: Loading area grove.are
+Wed Oct 30 00:36:02 2024 :: Loading area hitower.are
+Wed Oct 30 00:36:02 2024 :: Loading area hood.are
+Wed Oct 30 00:36:02 2024 :: Loading area limbo.are
+Wed Oct 30 00:36:02 2024 :: Loading area mahntor.are
+Wed Oct 30 00:36:02 2024 :: Loading area marsh.are
+Wed Oct 30 00:36:02 2024 :: Loading area mega1.are
+Wed Oct 30 00:36:02 2024 :: Loading area midennir.are
+Wed Oct 30 00:36:02 2024 :: Loading area mirror.are
+Wed Oct 30 00:36:02 2024 :: Loading area mobfact.are
+Wed Oct 30 00:36:02 2024 :: Loading area moria.are
+Wed Oct 30 00:36:02 2024 :: Loading area newthalos.are
+Wed Oct 30 00:36:02 2024 :: Loading area nirvana.are
+Wed Oct 30 00:36:02 2024 :: Loading area ofcol.are
+Wed Oct 30 00:36:02 2024 :: Loading area olympus.are
+Wed Oct 30 00:36:02 2024 :: Loading area pyramid.are
+Wed Oct 30 00:36:02 2024 :: Loading area quifael.are
+Wed Oct 30 00:36:02 2024 :: Loading area sewer.are
+Wed Oct 30 00:36:02 2024 :: Loading area redferne.are
+Wed Oct 30 00:36:02 2024 :: Loading area school.are
+Wed Oct 30 00:36:02 2024 :: Loading area smurf.are
+Wed Oct 30 00:36:02 2024 :: Loading area tohell.are
+Wed Oct 30 00:36:02 2024 :: Loading area trollden.are
+Wed Oct 30 00:36:02 2024 :: Loading area valley.are
+Wed Oct 30 00:36:02 2024 :: Loading area wyvern.are
+Wed Oct 30 00:36:02 2024 :: [*****] BUG: Fix_exits: 10525:1 -> 10535:3 -> 10534.
+Wed Oct 30 00:36:02 2024 :: [*****] BUG: Fix_exits: 3458:2 -> 3472:0 -> 10401.
+Wed Oct 30 00:36:02 2024 :: [*****] BUG: Fix_exits: 8705:4 -> 8706:5 -> 8708.
+Wed Oct 30 00:36:02 2024 :: [*****] BUG: Fix_exits: 8717:2 -> 8719:0 -> 8718.
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9217)(Level  7) an elemental rod of earthquake
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9217)(Level  3) a small rock
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9218)(Level 27) elemental wand of wind and air
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9234)(Level 13) an alchemist
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9216)(Level 25) an ice staff
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9214)(Level  8) a puddle
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9227)(Level 28) an icicle
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9228)(Level 24) the Ice Bandit
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9215)(Level 16) elemental wand of fire
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9215)(Level  4) a flame
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9215)(Level 16) elemental wand of fire
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9215)(Level  4) a flame
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9218)(Level 27) elemental wand of wind and air
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9218)(Level  4) a small spark
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9218)(Level 27) elemental wand of wind and air
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9225)(Level  2) an eddie
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  9216)(Level 25) an ice staff
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  9235)(Level 16) a baby rainbow dragon
+Wed Oct 30 00:36:02 2024 :: Check Levels:
+Wed Oct 30 00:36:02 2024 ::   Object: (VNUM  8010)(Level  5) a wet noodle
+Wed Oct 30 00:36:02 2024 ::      Mob: (VNUM  8002)(Level 17) a Futsie
+Wed Oct 30 00:36:02 2024 :: ROM is ready to rock on port 4000 (0.0.0.0).
+Wed Oct 30 00:36:02 2024 :: IMC: Loading IMC2 command table...
+Wed Oct 30 00:36:02 2024 :: IMC: Loading IMC2 network data...
+Wed Oct 30 00:36:02 2024 :: IMC: Loading IMC2 help file...
+Wed Oct 30 00:36:02 2024 :: IMC: Loading IMC2 color table...
+Wed Oct 30 00:36:02 2024 :: IMC: Loading IMC2 who template...
+Wed Oct 30 00:36:02 2024 :: IMC: IMC2 network data loaded. Autoconnect not set. IMC2 will need to be connected manually.
+Wed Oct 30 00:36:02 2024 :: Copyover recovery initiated
+Wed Oct 30 00:36:02 2024 :: Loading Shemp.
+Wed Oct 30 00:36:08 2024 :: [*****] BUG: ACT trigger fired: vnum '3001'

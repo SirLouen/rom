@@ -185,6 +185,12 @@ void get_obj (CHAR_DATA * ch, OBJ_DATA * obj, OBJ_DATA * container)
     else
     {
         obj_to_char (obj, ch);
+        
+        if ( HAS_TRIGGER_OBJ( obj, TRIG_GET ) )
+	        p_give_trigger( NULL, obj, NULL, ch, obj, TRIG_GET );
+
+	    if ( HAS_TRIGGER_ROOM( ch->in_room, TRIG_GET ) )
+	        p_give_trigger( NULL, NULL, ch->in_room, ch, obj, TRIG_GET );
     }
 
     return;
@@ -261,7 +267,7 @@ void do_get (CHAR_DATA * ch, char *argument)
             return;
         }
 
-        if ((container = get_obj_here (ch, arg2)) == NULL)
+        if ((container = get_obj_here( ch, NULL, arg2 )) == NULL)
         {
             act ("I see no $T here.", ch, NULL, arg2, TO_CHAR);
             return;
@@ -369,7 +375,7 @@ void do_put (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((container = get_obj_here (ch, arg2)) == NULL)
+    if ((container = get_obj_here( ch, NULL, arg2 )) == NULL)
     {
         act ("I see no $T here.", ch, NULL, arg2, TO_CHAR);
         return;
@@ -607,12 +613,19 @@ void do_drop (CHAR_DATA * ch, char *argument)
         obj_to_room (obj, ch->in_room);
         act ("$n drops $p.", ch, obj, NULL, TO_ROOM);
         act ("You drop $p.", ch, obj, NULL, TO_CHAR);
-        if (IS_OBJ_STAT (obj, ITEM_MELT_DROP))
-        {
-            act ("$p dissolves into smoke.", ch, obj, NULL, TO_ROOM);
-            act ("$p dissolves into smoke.", ch, obj, NULL, TO_CHAR);
-            extract_obj (obj);
-        }
+
+        if ( HAS_TRIGGER_OBJ( obj, TRIG_DROP ) )
+	        p_give_trigger( NULL, obj, NULL, ch, obj, TRIG_DROP );
+
+	    if ( HAS_TRIGGER_ROOM( ch->in_room, TRIG_DROP ) )
+	        p_give_trigger( NULL, NULL, ch->in_room, ch, obj, TRIG_DROP );
+	    
+	    if ( obj && IS_OBJ_STAT(obj,ITEM_MELT_DROP))
+	    {
+	        act("$p dissolves into smoke.",ch,obj,NULL,TO_ROOM);
+	        act("$p dissolves into smoke.",ch,obj,NULL,TO_CHAR);
+	        extract_obj(obj);
+	    }
     }
     else
     {
@@ -697,7 +710,7 @@ void do_give (CHAR_DATA * ch, char *argument)
             return;
         }
 
-        if ((victim = get_char_room (ch, arg2)) == NULL)
+        if ((victim = get_char_room( ch, NULL, arg2 )) == NULL)
         {
             send_to_char ("They aren't here.\n\r", ch);
             return;
@@ -731,8 +744,8 @@ void do_give (CHAR_DATA * ch, char *argument)
         /*
          * Bribe trigger
          */
-        if (IS_NPC (victim) && HAS_TRIGGER (victim, TRIG_BRIBE))
-            mp_bribe_trigger (victim, ch, silver ? amount : amount * 100);
+        if (IS_NPC (victim) && HAS_TRIGGER_MOB (victim, TRIG_BRIBE))
+            p_bribe_trigger (victim, ch, silver ? amount : amount * 100);
 
         if (IS_NPC (victim) && IS_SET (victim->act, ACT_IS_CHANGER))
         {
@@ -788,7 +801,7 @@ void do_give (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((victim = get_char_room (ch, arg2)) == NULL)
+    if ((victim = get_char_room( ch, NULL, arg2 )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -835,11 +848,17 @@ void do_give (CHAR_DATA * ch, char *argument)
     act ("You give $p to $N.", ch, obj, victim, TO_CHAR);
     MOBtrigger = TRUE;
 
+    if ( HAS_TRIGGER_OBJ( obj, TRIG_GIVE ) )
+	    p_give_trigger( NULL, obj, NULL, ch, obj, TRIG_GIVE );
+
+    if ( HAS_TRIGGER_ROOM( ch->in_room, TRIG_GIVE ) )
+	    p_give_trigger( NULL, NULL, ch->in_room, ch, obj, TRIG_GIVE );
+
     /*
      * Give trigger
      */
-    if (IS_NPC (victim) && HAS_TRIGGER (victim, TRIG_GIVE))
-        mp_give_trigger (victim, ch, obj);
+    if (IS_NPC (victim) && HAS_TRIGGER_MOB (victim, TRIG_GIVE))
+        p_give_trigger( victim, NULL, NULL, ch, obj, TRIG_GIVE );
 
     return;
 }
@@ -1078,9 +1097,9 @@ void do_pour (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((in = get_obj_here (ch, argument)) == NULL)
+    if ((in = get_obj_here( ch, NULL, argument )) == NULL)
     {
-        vch = get_char_room (ch, argument);
+        vch = get_char_room( ch, NULL, argument );
 
         if (vch == NULL)
         {
@@ -1183,7 +1202,7 @@ void do_drink (CHAR_DATA * ch, char *argument)
     }
     else
     {
-        if ((obj = get_obj_here (ch, arg)) == NULL)
+        if ((obj = get_obj_here( ch, NULL, arg )) == NULL)
         {
             send_to_char ("You can't find it.\n\r", ch);
             return;
@@ -1750,7 +1769,7 @@ void do_remove (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((obj = get_obj_wear (ch, arg)) == NULL)
+    if ((obj = get_obj_wear( ch, arg, TRUE )) == NULL)
     {
         send_to_char ("You do not have that item.\n\r", ch);
         return;
@@ -1944,8 +1963,8 @@ void do_recite (CHAR_DATA * ch, char *argument)
     }
     else
     {
-        if ((victim = get_char_room (ch, arg2)) == NULL
-            && (obj = get_obj_here (ch, arg2)) == NULL)
+        if ((victim = get_char_room( ch, NULL, arg2 )) == NULL
+            && (obj = get_obj_here( ch, NULL, arg2 )) == NULL)
         {
             send_to_char ("You can't find it.\n\r", ch);
             return;
@@ -2106,8 +2125,8 @@ void do_zap (CHAR_DATA * ch, char *argument)
     }
     else
     {
-        if ((victim = get_char_room (ch, arg)) == NULL
-            && (obj = get_obj_here (ch, arg)) == NULL)
+        if ((victim = get_char_room( ch, NULL, arg )) == NULL
+            && (obj = get_obj_here( ch, NULL, arg )) == NULL)
         {
             send_to_char ("You can't find it.\n\r", ch);
             return;
@@ -2176,7 +2195,7 @@ void do_steal (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((victim = get_char_room (ch, arg2)) == NULL)
+    if ((victim = get_char_room( ch, NULL, arg2 )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -2568,7 +2587,7 @@ void do_buy (CHAR_DATA * ch, char *argument)
 
         in_room = ch->in_room;
         ch->in_room = pRoomIndexNext;
-        pet = get_char_room (ch, arg);
+        pet = get_char_room( ch, NULL, arg );
         ch->in_room = in_room;
 
         if (pet == NULL || !IS_SET (pet->act, ACT_PET))

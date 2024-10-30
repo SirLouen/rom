@@ -216,11 +216,14 @@ void do_enter (CHAR_DATA * ch, char *argument)
          * If someone is following the char, these triggers get activated
          * for the followers before the char, but it's safer this way...
          */
-        if (IS_NPC (ch) && HAS_TRIGGER (ch, TRIG_ENTRY))
-            mp_percent_trigger (ch, NULL, NULL, NULL, TRIG_ENTRY);
+        if (IS_NPC (ch) && HAS_TRIGGER_MOB (ch, TRIG_ENTRY))
+            p_percent_trigger( ch, NULL, NULL, NULL, NULL, NULL, TRIG_ENTRY );
         if (!IS_NPC (ch))
-            mp_greet_trigger (ch);
-
+        {
+            p_greet_trigger( ch, PRG_MPROG );
+            p_greet_trigger( ch, PRG_OPROG );
+	        p_greet_trigger( ch, PRG_RPROG );
+        }
         return;
     }
 

@@ -68,6 +68,8 @@ void violence_update (void)
     CHAR_DATA *ch;
     CHAR_DATA *ch_next;
     CHAR_DATA *victim;
+    OBJ_DATA *obj, *obj_next;
+    bool room_trig = FALSE;
 
     for (ch = char_list; ch != NULL; ch = ch_next)
     {
@@ -91,11 +93,27 @@ void violence_update (void)
 
         if (IS_NPC (ch))
         {
-            if (HAS_TRIGGER (ch, TRIG_FIGHT))
-                mp_percent_trigger (ch, victim, NULL, NULL, TRIG_FIGHT);
-            if (HAS_TRIGGER (ch, TRIG_HPCNT))
-                mp_hprct_trigger (ch, victim);
+            if (HAS_TRIGGER_MOB (ch, TRIG_FIGHT))
+                p_percent_trigger( ch, NULL, NULL, victim, NULL, NULL, TRIG_FIGHT );
+                
+            if (HAS_TRIGGER_MOB (ch, TRIG_HPCNT))
+                p_hprct_trigger( ch, victim );
         }
+
+        for ( obj = ch->carrying; obj; obj = obj_next )
+        {
+            obj_next = obj->next_content;
+
+            if ( obj->wear_loc != WEAR_NONE && HAS_TRIGGER_OBJ( obj, TRIG_FIGHT ) )
+            p_percent_trigger( NULL, obj, NULL, victim, NULL, NULL, TRIG_FIGHT );
+        }
+
+        if ( HAS_TRIGGER_ROOM( ch->in_room, TRIG_FIGHT ) && room_trig == FALSE )
+        {
+            room_trig = TRUE;
+            p_percent_trigger( NULL, NULL, ch->in_room, victim, NULL, NULL, TRIG_FIGHT );
+        }
+
     }
 
     return;
@@ -737,8 +755,8 @@ bool damage (CHAR_DATA * ch, CHAR_DATA * victim, int dam, int dt,
             if (victim->fighting == NULL)
             {
                 set_fighting (victim, ch);
-                if (IS_NPC (victim) && HAS_TRIGGER (victim, TRIG_KILL))
-                    mp_percent_trigger (victim, ch, NULL, NULL, TRIG_KILL);
+                if (IS_NPC (victim) && HAS_TRIGGER_MOB (victim, TRIG_KILL))
+                    p_percent_trigger( victim, NULL, NULL, ch, NULL, NULL, TRIG_KILL );
             }
             if (victim->timer <= 4)
                 victim->position = POS_FIGHTING;
@@ -915,10 +933,10 @@ bool damage (CHAR_DATA * ch, CHAR_DATA * victim, int dam, int dt,
         /*
          * Death trigger
          */
-        if (IS_NPC (victim) && HAS_TRIGGER (victim, TRIG_DEATH))
+        if (IS_NPC (victim) && HAS_TRIGGER_MOB (victim, TRIG_DEATH))
         {
             victim->position = POS_STANDING;
-            mp_percent_trigger (victim, ch, NULL, NULL, TRIG_DEATH);
+            p_percent_trigger( victim, NULL, NULL, ch, NULL, NULL, TRIG_DEATH );
         }
 
         raw_kill (victim);
@@ -2383,7 +2401,7 @@ void do_bash (CHAR_DATA * ch, char *argument)
         }
     }
 
-    else if ((victim = get_char_room (ch, arg)) == NULL)
+    else if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -2513,7 +2531,7 @@ void do_dirt (CHAR_DATA * ch, char *argument)
         }
     }
 
-    else if ((victim = get_char_room (ch, arg)) == NULL)
+    else if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -2666,7 +2684,7 @@ void do_trip (CHAR_DATA * ch, char *argument)
         }
     }
 
-    else if ((victim = get_char_room (ch, arg)) == NULL)
+    else if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -2768,7 +2786,7 @@ void do_kill (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((victim = get_char_room (ch, arg)) == NULL)
+    if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -2846,7 +2864,7 @@ void do_murder (CHAR_DATA * ch, char *argument)
         || (IS_NPC (ch) && IS_SET (ch->act, ACT_PET)))
         return;
 
-    if ((victim = get_char_room (ch, arg)) == NULL)
+    if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -2913,7 +2931,7 @@ void do_backstab (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    else if ((victim = get_char_room (ch, arg)) == NULL)
+    else if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -3042,7 +3060,7 @@ void do_rescue (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((victim = get_char_room (ch, arg)) == NULL)
+    if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;
@@ -3233,8 +3251,8 @@ void do_surrender (CHAR_DATA * ch, char *argument)
     stop_fighting (ch, TRUE);
 
     if (!IS_NPC (ch) && IS_NPC (mob)
-        && (!HAS_TRIGGER (mob, TRIG_SURR)
-            || !mp_percent_trigger (mob, ch, NULL, NULL, TRIG_SURR)))
+        && (!HAS_TRIGGER_MOB (mob, TRIG_SURR)
+            || !p_percent_trigger( mob, NULL, NULL, ch, NULL, NULL, TRIG_SURR )))
     {
         act ("$N seems to ignore your cowardly act!", ch, NULL, mob, TO_CHAR);
         multi_hit (mob, ch, TYPE_UNDEFINED);
@@ -3261,7 +3279,7 @@ void do_slay (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((victim = get_char_room (ch, arg)) == NULL)
+    if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
         return;

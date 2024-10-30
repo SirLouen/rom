@@ -53,6 +53,12 @@ bool run_olc_editor (DESCRIPTOR_DATA * d)
         case ED_MPCODE:
             mpedit (d->character, d->incomm);
             break;
+        case ED_OPCODE:
+	        opedit( d->character, d->incomm );
+	        break;
+        case ED_RPCODE:
+	        rpedit( d->character, d->incomm );
+	        break;
         case ED_HELP:
             hedit (d->character, d->incomm);
             break;
@@ -86,6 +92,12 @@ char *olc_ed_name (CHAR_DATA * ch)
         case ED_MPCODE:
             sprintf (buf, "MPEdit");
             break;
+        case ED_OPCODE:
+	        sprintf( buf, "OPEdit" );
+	        break;
+        case ED_RPCODE:
+	        sprintf( buf, "RPEdit" );
+	        break;
         case ED_HELP:
             sprintf (buf, "HEdit");
             break;
@@ -104,7 +116,9 @@ char *olc_ed_vnum (CHAR_DATA * ch)
     ROOM_INDEX_DATA *pRoom;
     OBJ_INDEX_DATA *pObj;
     MOB_INDEX_DATA *pMob;
-    MPROG_CODE *pMprog;
+    PROG_CODE *pMprog;
+    PROG_CODE *pOprog;
+    PROG_CODE *pRprog;
     HELP_DATA *pHelp;
     static char buf[MIL];
 
@@ -128,9 +142,17 @@ char *olc_ed_vnum (CHAR_DATA * ch)
             sprintf (buf, "%d", pMob ? pMob->vnum : 0);
             break;
         case ED_MPCODE:
-            pMprog = (MPROG_CODE *) ch->desc->pEdit;
+            pMprog = (PROG_CODE *) ch->desc->pEdit;
             sprintf (buf, "%d", pMprog ? pMprog->vnum : 0);
             break;
+        case ED_OPCODE:
+	        pOprog = (PROG_CODE *)ch->desc->pEdit;
+	        sprintf( buf, "%d", pOprog ? pOprog->vnum : 0 );
+	        break;
+        case ED_RPCODE:
+	        pRprog = (PROG_CODE *)ch->desc->pEdit;
+	        sprintf( buf, "%d", pRprog ? pRprog->vnum : 0 );
+	        break;
         case ED_HELP:
             pHelp = (HELP_DATA *) ch->desc->pEdit;
             sprintf (buf, "%s", pHelp ? pHelp->keyword : "");
@@ -200,6 +222,12 @@ bool show_commands (CHAR_DATA * ch, char *argument)
         case ED_MPCODE:
             show_olc_cmds (ch, mpedit_table);
             break;
+        case ED_OPCODE:
+	        show_olc_cmds( ch, opedit_table );
+	        break;
+	    case ED_RPCODE:
+	        show_olc_cmds( ch, rpedit_table );
+	        break;
         case ED_HELP:
             show_olc_cmds (ch, hedit_table);
             break;
@@ -230,6 +258,8 @@ const struct olc_cmd_type aedit_table[] = {
     {"lvnum", aedit_lvnum},
     {"uvnum", aedit_uvnum},
     {"credits", aedit_credits},
+    {"addrprog", redit_addrprog	},
+    {"delrprog", redit_delrprog	},
 
     {"?", show_help},
     {"version", show_version},
@@ -272,6 +302,9 @@ const struct olc_cmd_type redit_table[] = {
     {"room", redit_room},
     {"sector", redit_sector},
 
+    { "addrprog",	redit_addrprog	},
+    { "delrprog",	redit_delrprog	},
+
     {"?", show_help},
     {"version", show_version},
 
@@ -307,6 +340,9 @@ const struct olc_cmd_type oedit_table[] = {
     {"material", oedit_material},    /* ROM */
     {"level", oedit_level},        /* ROM */
     {"condition", oedit_condition},    /* ROM */
+
+    { "addoprog", oedit_addoprog	},
+    { "deloprog", oedit_deloprog	},
 
     {"?", show_help},
     {"version", show_version},
@@ -352,8 +388,6 @@ const struct olc_cmd_type medit_table[] = {
     {"hitroll", medit_hitroll},    /* ROM */
     {"damtype", medit_damtype},    /* ROM */
     {"group", medit_group},        /* ROM */
-    {"addmprog", medit_addmprog},    /* ROM */
-    {"delmprog", medit_delmprog},    /* ROM */
 
     {"?", show_help},
     {"version", show_version},
@@ -646,13 +680,15 @@ void medit (CHAR_DATA * ch, char *argument)
 const struct editor_cmd_type editor_table[] = {
 /*  {   command        function    }, */
 
-    {"area", do_aedit},
-    {"room", do_redit},
+    {"area",   do_aedit},
+    {"room",   do_redit},
     {"object", do_oedit},
     {"mobile", do_medit},
     {"mpcode", do_mpedit},
-    {"hedit", do_hedit},
-
+    {"opcode", do_opedit},
+    {"rpcode", do_rpedit},
+    {"hedit",  do_hedit},
+    
     {NULL, 0,}
 };
 

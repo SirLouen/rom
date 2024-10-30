@@ -31,15 +31,19 @@
  */
 #if defined(TRADITIONAL)
 #define const
-#define args( list )            ( )
-#define DECLARE_DO_FUN( fun )        void fun( )
-#define DECLARE_SPEC_FUN( fun )        bool fun( )
+#define args( list )                ( )
+#define DECLARE_DO_FUN( fun )       void fun( )
+#define DECLARE_SPEC_FUN( fun )     bool fun( )
 #define DECLARE_SPELL_FUN( fun )    void fun( )
+#define DECLARE_OBJ_FUN( fun )		void fun( )
+#define DECLARE_ROOM_FUN( fun )		void fun( )
 #else
-#define args( list )            list
-#define DECLARE_DO_FUN( fun )        DO_FUN    fun
-#define DECLARE_SPEC_FUN( fun )        SPEC_FUN  fun
+#define args( list )                list
+#define DECLARE_DO_FUN( fun )       DO_FUN    fun
+#define DECLARE_SPEC_FUN( fun )     SPEC_FUN  fun
 #define DECLARE_SPELL_FUN( fun )    SPELL_FUN fun
+#define DECLARE_OBJ_FUN( fun )		OBJ_FUN	  fun
+#define DECLARE_ROOM_FUN( fun )		ROOM_FUN  fun
 #endif
 
 /* system calls */
@@ -104,6 +108,8 @@ typedef struct    time_info_data   TIME_INFO_DATA;
 typedef struct    weather_data     WEATHER_DATA;
 typedef struct    mprog_list       MPROG_LIST;
 typedef struct    mprog_code       MPROG_CODE;
+typedef struct    prog_list        PROG_LIST;
+typedef struct    prog_code        PROG_CODE;
 typedef struct    colour_data      COLOUR_DATA;
 
 /*
@@ -113,6 +119,8 @@ typedef void DO_FUN    args( ( CHAR_DATA *ch, char *argument ) );
 typedef bool SPEC_FUN  args( ( CHAR_DATA *ch ) );
 typedef void SPELL_FUN args( ( int sn, int level, CHAR_DATA *ch, void *vo,
                 int target ) );
+typedef void OBJ_FUN   args( ( OBJ_DATA *obj, char *argument ) );
+typedef void ROOM_FUN  args( ( ROOM_INDEX_DATA *room, char *argument ) );
 
 
 
@@ -1479,7 +1487,7 @@ struct    mob_index_data
     MOB_INDEX_DATA *  next;
     SPEC_FUN *        spec_fun;
     SHOP_DATA *       pShop;
-    MPROG_LIST *      mprogs;
+    PROG_LIST *		  mprogs;
     AREA_DATA *       area;        /* OLC */
     sh_int            vnum;
     sh_int            group;
@@ -1769,6 +1777,8 @@ struct    obj_index_data
     sh_int              weight;
     int                 cost;
     int                 value[5];
+    PROG_LIST *		    oprogs;
+    long		        oprog_flags;
 };
 
 
@@ -1805,6 +1815,8 @@ struct    obj_data
     char *              material;
     sh_int              timer;
     int                 value [5];
+    CHAR_DATA *	        oprog_target;
+    sh_int			    oprog_delay;
 };
 
 
@@ -1886,26 +1898,30 @@ struct    area_data
 /*
  * Room type.
  */
-struct    room_index_data
+struct room_index_data
 {
-    ROOM_INDEX_DATA *    next;
+    ROOM_INDEX_DATA *  next;
     CHAR_DATA *        people;
-    OBJ_DATA *        contents;
-    EXTRA_DESCR_DATA *    extra_descr;
+    OBJ_DATA *         contents;
+    EXTRA_DESCR_DATA * extra_descr;
     AREA_DATA *        area;
     EXIT_DATA *        exit    [6];
-    RESET_DATA *    reset_first;    /* OLC */
-    RESET_DATA *    reset_last;    /* OLC */
-    char *        name;
-    char *        description;
-    char *        owner;
-    sh_int        vnum;
-    int            room_flags;
-    sh_int        light;
-    sh_int        sector_type;
-    sh_int        heal_rate;
-    sh_int         mana_rate;
-    sh_int        clan;
+    RESET_DATA *       reset_first;    /* OLC */
+    RESET_DATA *       reset_last;    /* OLC */
+    char *             name;
+    char *             description;
+    char *             owner;
+    sh_int             vnum;
+    int                room_flags;
+    sh_int             light;
+    sh_int             sector_type;
+    sh_int             heal_rate;
+    sh_int             mana_rate;
+    sh_int             clan;
+    PROG_LIST *		   rprogs;
+    CHAR_DATA *		   rprog_target;
+    long		       rprog_flags;
+    sh_int		       rprog_delay;
 };
 
 
@@ -1969,38 +1985,48 @@ struct  group_type
  * MOBprog definitions
  */                   
 #define TRIG_ACT    (A)
-#define TRIG_BRIBE    (B)
-#define TRIG_DEATH    (C)
-#define TRIG_ENTRY    (D)
-#define TRIG_FIGHT    (E)
-#define TRIG_GIVE    (F)
-#define TRIG_GREET    (G)
-#define TRIG_GRALL    (H)
-#define TRIG_KILL    (I)
-#define TRIG_HPCNT    (J)
-#define TRIG_RANDOM    (K)
-#define TRIG_SPEECH    (L)
-#define TRIG_EXIT    (M)
-#define TRIG_EXALL    (N)
-#define TRIG_DELAY    (O)
-#define TRIG_SURR    (P)
+#define TRIG_BRIBE  (B)
+#define TRIG_DEATH  (C)
+#define TRIG_ENTRY  (D)
+#define TRIG_FIGHT  (E)
+#define TRIG_GIVE   (F)
+#define TRIG_GREET  (G)
+#define TRIG_GRALL  (H)
+#define TRIG_KILL   (I)
+#define TRIG_HPCNT  (J)
+#define TRIG_RANDOM (K)
+#define TRIG_SPEECH (L)
+#define TRIG_EXIT   (M)
+#define TRIG_EXALL  (N)
+#define TRIG_DELAY  (O)
+#define TRIG_SURR   (P)
+#define TRIG_GET	(Q)
+#define TRIG_DROP	(R)
+#define TRIG_SIT	(S)
 
-struct mprog_list
+/*
+ * Prog types
+ */
+#define PRG_MPROG	0
+#define PRG_OPROG	1
+#define PRG_RPROG	2
+
+struct prog_list
 {
-    int            trig_type;
-    char *        trig_phrase;
-    sh_int        vnum;
-    char *          code;
-    MPROG_LIST *     next;
-    bool        valid;
+    int                 trig_type;
+    char *              trig_phrase;
+    sh_int              vnum;
+    char *              code;
+    PROG_LIST *         next;
+    bool                valid;
 };
 
-struct mprog_code
+struct prog_code
 {
-    sh_int        vnum;
-    char *        code;
-    MPROG_CODE *    next;
-};
+    sh_int              vnum;
+    char *              code;
+    PROG_CODE *         next;
+}; 
 
 /*
  * These are skill_lookup return values for common skills and spells.
@@ -2121,7 +2147,9 @@ extern sh_int  gsn_recall;
 #define act(format,ch,arg1,arg2,type)\
     act_new((format),(ch),(arg1),(arg2),(type),POS_RESTING)
 
-#define HAS_TRIGGER(ch,trig)    (IS_SET((ch)->pIndexData->mprog_flags,(trig)))
+#define HAS_TRIGGER_MOB(ch,trig)    (IS_SET((ch)->pIndexData->mprog_flags,(trig)))
+#define HAS_TRIGGER_OBJ(obj,trig)   (IS_SET((obj)->pIndexData->oprog_flags,(trig)))
+#define HAS_TRIGGER_ROOM(room,trig) (IS_SET((room)->rprog_flags,(trig)))
 #define IS_SWITCHED( ch )       ( ch->desc && ch->desc->original )
 #define IS_BUILDER(ch, Area)    ( !IS_NPC(ch) && !IS_SWITCHED( ch ) &&      \
                 ( ch->pcdata->security >= Area->security  \
@@ -2199,7 +2227,9 @@ extern  CHAR_DATA		*	char_list;
 extern  DESCRIPTOR_DATA	*	descriptor_list;
 extern  OBJ_DATA		*	object_list;
 
-extern  MPROG_CODE		*	mprog_list;
+extern          PROG_CODE         *     mprog_list;
+extern          PROG_CODE         *     rprog_list;
+extern          PROG_CODE         *     oprog_list;
 
 extern  char				bug_buf[];
 extern  time_t				current_time;
@@ -2360,6 +2390,7 @@ char *    crypt        args( ( const char *key, const char *salt ) );
 #define SF   SPEC_FUN
 #define AD   AFFECT_DATA
 #define MPC  MPROG_CODE
+#define PC   PROG_CODE
 
 /* act_comm.c */
 void     check_sex           args( ( CHAR_DATA *ch) );
@@ -2432,7 +2463,7 @@ char *   get_extra_descr     args( ( const char *name, EXTRA_DESCR_DATA *ed ) );
 MID *    get_mob_index       args( ( int vnum ) );
 OID *    get_obj_index       args( ( int vnum ) );
 RID *    get_room_index      args( ( int vnum ) );
-MPC *    get_mprog_index     args( ( int vnum ) );
+PC *     get_prog_index      args( ( int vnum, int type ) );
 char     fread_letter        args( ( FILE *fp ) );
 int      fread_number        args( ( FILE *fp ) );
 long     fread_flag          args( ( FILE *fp ) );
@@ -2498,91 +2529,89 @@ void    stop_fighting    args( ( CHAR_DATA *ch, bool fBoth ) );
 void    check_killer    args( ( CHAR_DATA *ch, CHAR_DATA *victim) );
 
 /* handler.c */
-AD      *affect_find args( (AFFECT_DATA *paf, int sn));
-void    affect_check    args( (CHAR_DATA *ch, int where, int vector) );
-int    count_users    args( (OBJ_DATA *obj) );
-void     deduct_cost    args( (CHAR_DATA *ch, int cost) );
+AD *    affect_find       args( (AFFECT_DATA *paf, int sn));
+void    affect_check      args( (CHAR_DATA *ch, int where, int vector) );
+int     count_users       args( (OBJ_DATA *obj) );
+void    deduct_cost       args( (CHAR_DATA *ch, int cost) );
 void    affect_enchant    args( (OBJ_DATA *obj) );
-int     check_immune    args( (CHAR_DATA *ch, int dam_type) );
-int     material_lookup args( ( const char *name) );
-int    weapon_lookup    args( ( const char *name) );
-int    weapon_type    args( ( const char *name) );
-char     *weapon_name    args( ( int weapon_Type) );
-char    *item_name    args( ( int item_type) ); 
-int    attack_lookup    args( ( const char *name) );
-long    wiznet_lookup    args( ( const char *name) );
-int    class_lookup    args( ( const char *name) );
-bool    is_clan        args( (CHAR_DATA *ch) );
-bool    is_same_clan    args( (CHAR_DATA *ch, CHAR_DATA *victim));
-bool    is_old_mob    args ( (CHAR_DATA *ch) );
-int    get_skill    args( ( CHAR_DATA *ch, int sn ) );
-int    get_weapon_sn    args( ( CHAR_DATA *ch ) );
-int    get_weapon_skill args(( CHAR_DATA *ch, int sn ) );
-int     get_age         args( ( CHAR_DATA *ch ) );
-void    reset_char    args( ( CHAR_DATA *ch )  );
-int    get_trust    args( ( CHAR_DATA *ch ) );
-int    get_curr_stat    args( ( CHAR_DATA *ch, int stat ) );
-int     get_max_train    args( ( CHAR_DATA *ch, int stat ) );
-int    can_carry_n    args( ( CHAR_DATA *ch ) );
-int    can_carry_w    args( ( CHAR_DATA *ch ) );
-bool    is_name        args( ( char *str, char *namelist ) );
-bool	is_full_name	args( ( const char *str, char *namelist ) );
-bool    is_exact_name    args( ( char *str, char *namelist ) );
+int     check_immune      args( (CHAR_DATA *ch, int dam_type) );
+int     material_lookup   args( ( const char *name) );
+int     weapon_lookup     args( ( const char *name) );
+int     weapon_type       args( ( const char *name) );
+char *  weapon_name       args( ( int weapon_Type) );
+char *  item_name         args( ( int item_type) ); 
+int     attack_lookup     args( ( const char *name) );
+long    wiznet_lookup     args( ( const char *name) );
+int     class_lookup      args( ( const char *name) );
+bool    is_clan           args( (CHAR_DATA *ch) );
+bool    is_same_clan      args( (CHAR_DATA *ch, CHAR_DATA *victim));
+bool    is_old_mob        args ( (CHAR_DATA *ch) );
+int     get_skill         args( ( CHAR_DATA *ch, int sn ) );
+int     get_weapon_sn     args( ( CHAR_DATA *ch ) );
+int     get_weapon_skill  args(( CHAR_DATA *ch, int sn ) );
+int     get_age           args( ( CHAR_DATA *ch ) );
+void    reset_char        args( ( CHAR_DATA *ch )  );
+int     get_trust         args( ( CHAR_DATA *ch ) );
+int     get_curr_stat     args( ( CHAR_DATA *ch, int stat ) );
+int     get_max_train     args( ( CHAR_DATA *ch, int stat ) );
+int     can_carry_n       args( ( CHAR_DATA *ch ) );
+int     can_carry_w       args( ( CHAR_DATA *ch ) );
+bool    is_name           args( ( char *str, char *namelist ) );
+bool	is_full_name	  args( ( const char *str, char *namelist ) );
+bool    is_exact_name     args( ( char *str, char *namelist ) );
 void    affect_to_char    args( ( CHAR_DATA *ch, AFFECT_DATA *paf ) );
-void    affect_to_obj    args( ( OBJ_DATA *obj, AFFECT_DATA *paf ) );
-void    affect_remove    args( ( CHAR_DATA *ch, AFFECT_DATA *paf ) );
+void    affect_to_obj     args( ( OBJ_DATA *obj, AFFECT_DATA *paf ) );
+void    affect_remove     args( ( CHAR_DATA *ch, AFFECT_DATA *paf ) );
 void    affect_remove_obj args( (OBJ_DATA *obj, AFFECT_DATA *paf ) );
-void    affect_strip    args( ( CHAR_DATA *ch, int sn ) );
-bool    is_affected    args( ( CHAR_DATA *ch, int sn ) );
-void    affect_join    args( ( CHAR_DATA *ch, AFFECT_DATA *paf ) );
+void    affect_strip      args( ( CHAR_DATA *ch, int sn ) );
+bool    is_affected       args( ( CHAR_DATA *ch, int sn ) );
+void    affect_join       args( ( CHAR_DATA *ch, AFFECT_DATA *paf ) );
 void    char_from_room    args( ( CHAR_DATA *ch ) );
-void    char_to_room    args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *pRoomIndex ) );
-void    obj_to_char    args( ( OBJ_DATA *obj, CHAR_DATA *ch ) );
-void    obj_from_char    args( ( OBJ_DATA *obj ) );
-int    apply_ac    args( ( OBJ_DATA *obj, int iWear, int type ) );
-OD *    get_eq_char    args( ( CHAR_DATA *ch, int iWear ) );
-void    equip_char    args( ( CHAR_DATA *ch, OBJ_DATA *obj, int iWear ) );
-void    unequip_char    args( ( CHAR_DATA *ch, OBJ_DATA *obj ) );
-int    count_obj_list    args( ( OBJ_INDEX_DATA *obj, OBJ_DATA *list ) );
-void    obj_from_room    args( ( OBJ_DATA *obj ) );
-void    obj_to_room    args( ( OBJ_DATA *obj, ROOM_INDEX_DATA *pRoomIndex ) );
-void    obj_to_obj    args( ( OBJ_DATA *obj, OBJ_DATA *obj_to ) );
-void    obj_from_obj    args( ( OBJ_DATA *obj ) );
-void    extract_obj    args( ( OBJ_DATA *obj ) );
-void    extract_char    args( ( CHAR_DATA *ch, bool fPull ) );
-CD *    get_char_room    args( ( CHAR_DATA *ch, char *argument ) );
+void    char_to_room      args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *pRoomIndex ) );
+void    obj_to_char       args( ( OBJ_DATA *obj, CHAR_DATA *ch ) );
+void    obj_from_char     args( ( OBJ_DATA *obj ) );
+int     apply_ac          args( ( OBJ_DATA *obj, int iWear, int type ) );
+OD *    get_eq_char       args( ( CHAR_DATA *ch, int iWear ) );
+void    equip_char        args( ( CHAR_DATA *ch, OBJ_DATA *obj, int iWear ) );
+void    unequip_char      args( ( CHAR_DATA *ch, OBJ_DATA *obj ) );
+int     count_obj_list    args( ( OBJ_INDEX_DATA *obj, OBJ_DATA *list ) );
+void    obj_from_room     args( ( OBJ_DATA *obj ) );
+void    obj_to_room       args( ( OBJ_DATA *obj, ROOM_INDEX_DATA *pRoomIndex ) );
+void    obj_to_obj        args( ( OBJ_DATA *obj, OBJ_DATA *obj_to ) );
+void    obj_from_obj      args( ( OBJ_DATA *obj ) );
+void    extract_obj       args( ( OBJ_DATA *obj ) );
+void    extract_char      args( ( CHAR_DATA *ch, bool fPull ) );
+CD *	get_char_room	  args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *room, char *argument ) );
 CD *    get_char_world    args( ( CHAR_DATA *ch, char *argument ) );
-OD *    get_obj_type    args( ( OBJ_INDEX_DATA *pObjIndexData ) );
-OD *    get_obj_list    args( ( CHAR_DATA *ch, char *argument,
-                OBJ_DATA *list ) );
-OD *    get_obj_carry    args( ( CHAR_DATA *ch, char *argument, 
-                CHAR_DATA *viewer ) );
-OD *    get_obj_wear    args( ( CHAR_DATA *ch, char *argument ) );
-OD *    get_obj_here    args( ( CHAR_DATA *ch, char *argument ) );
-OD *    get_obj_world    args( ( CHAR_DATA *ch, char *argument ) );
-OD *    create_money    args( ( int gold, int silver ) );
-int    get_obj_number    args( ( OBJ_DATA *obj ) );
-int    get_obj_weight    args( ( OBJ_DATA *obj ) );
-int    get_true_weight    args( ( OBJ_DATA *obj ) );
-bool    room_is_dark    args( ( ROOM_INDEX_DATA *pRoomIndex ) );
-bool    is_room_owner    args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *room) );
-bool    room_is_private    args( ( ROOM_INDEX_DATA *pRoomIndex ) );
-bool    can_see        args( ( CHAR_DATA *ch, CHAR_DATA *victim ) );
-bool    can_see_obj    args( ( CHAR_DATA *ch, OBJ_DATA *obj ) );
-bool    can_see_room    args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *pRoomIndex) );
-bool    can_drop_obj    args( ( CHAR_DATA *ch, OBJ_DATA *obj ) );
-char *    affect_loc_name    args( ( int location ) );
-char *    affect_bit_name    args( ( int vector ) );
-char *    extra_bit_name    args( ( int extra_flags ) );
-char *     wear_bit_name    args( ( int wear_flags ) );
-char *    act_bit_name    args( ( int act_flags ) );
-char *    off_bit_name    args( ( int off_flags ) );
-char *  imm_bit_name    args( ( int imm_flags ) );
-char *     form_bit_name    args( ( int form_flags ) );
-char *    part_bit_name    args( ( int part_flags ) );
-char *    weapon_bit_name    args( ( int weapon_flags ) );
-char *  comm_bit_name    args( ( int comm_flags ) );
-char *    cont_bit_name    args( ( int cont_flags) );
+OD *    get_obj_type      args( ( OBJ_INDEX_DATA *pObjIndexData ) );
+OD *    get_obj_list      args( ( CHAR_DATA *ch, char *argument, OBJ_DATA *list ) );
+OD *    get_obj_carry     args( ( CHAR_DATA *ch, char *argument, CHAR_DATA *viewer ) );
+OD *    get_obj_wear	  args( ( CHAR_DATA *ch, char *argument, bool character ));
+OD *	get_obj_here	  args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *room, char *argument ) );
+OD *    get_obj_world     args( ( CHAR_DATA *ch, char *argument ) );
+OD *    create_money      args( ( int gold, int silver ) );
+int     get_obj_number    args( ( OBJ_DATA *obj ) );
+int     get_obj_weight    args( ( OBJ_DATA *obj ) );
+int     get_true_weight   args( ( OBJ_DATA *obj ) );
+bool    room_is_dark      args( ( ROOM_INDEX_DATA *pRoomIndex ) );
+bool    is_room_owner     args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *room) );
+bool    room_is_private   args( ( ROOM_INDEX_DATA *pRoomIndex ) );
+bool    can_see           args( ( CHAR_DATA *ch, CHAR_DATA *victim ) );
+bool    can_see_obj       args( ( CHAR_DATA *ch, OBJ_DATA *obj ) );
+bool    can_see_room      args( ( CHAR_DATA *ch, ROOM_INDEX_DATA *pRoomIndex) );
+bool    can_drop_obj      args( ( CHAR_DATA *ch, OBJ_DATA *obj ) );
+char *  affect_loc_name   args( ( int location ) );
+char *  affect_bit_name   args( ( int vector ) );
+char *  extra_bit_name    args( ( int extra_flags ) );
+char *  wear_bit_name     args( ( int wear_flags ) );
+char *  act_bit_name      args( ( int act_flags ) );
+char *  off_bit_name      args( ( int off_flags ) );
+char *  imm_bit_name      args( ( int imm_flags ) );
+char *  form_bit_name     args( ( int form_flags ) );
+char *  part_bit_name     args( ( int part_flags ) );
+char *  weapon_bit_name   args( ( int weapon_flags ) );
+char *  comm_bit_name     args( ( int comm_flags ) );
+char *  cont_bit_name     args( ( int cont_flags) );
 /*
  * Colour Config
  */
@@ -2606,20 +2635,31 @@ void    obj_cast_spell    args( ( int sn, int level, CHAR_DATA *ch,
                     CHAR_DATA *victim, OBJ_DATA *obj ) );
 
 /* mob_prog.c */
-void    program_flow    args( ( sh_int vnum, char *source, CHAR_DATA *mob, CHAR_DATA *ch,
-                const void *arg1, const void *arg2 ) );
-void    mp_act_trigger    args( ( char *argument, CHAR_DATA *mob, CHAR_DATA *ch,
-                const void *arg1, const void *arg2, int type ) );
-bool    mp_percent_trigger args( ( CHAR_DATA *mob, CHAR_DATA *ch,                 
-                const void *arg1, const void *arg2, int type ) );
-void    mp_bribe_trigger  args( ( CHAR_DATA *mob, CHAR_DATA *ch, int amount ) );
-bool    mp_exit_trigger   args( ( CHAR_DATA *ch, int dir ) );
-void    mp_give_trigger   args( ( CHAR_DATA *mob, CHAR_DATA *ch, OBJ_DATA *obj ) );
-void     mp_greet_trigger  args( ( CHAR_DATA *ch ) );
-void    mp_hprct_trigger  args( ( CHAR_DATA *mob, CHAR_DATA *ch ) );
+void	program_flow	args( ( sh_int vnum, char *source, CHAR_DATA *mob, 
+				OBJ_DATA *obj, ROOM_INDEX_DATA *room,
+				CHAR_DATA *ch, const void *arg1,
+				const void *arg2 ) );
+void	p_act_trigger	args( ( char *argument, CHAR_DATA *mob, 
+				OBJ_DATA *obj, ROOM_INDEX_DATA *room,
+				CHAR_DATA *ch, const void *arg1,
+				const void *arg2, int type ) );
+bool	p_percent_trigger args( ( CHAR_DATA *mob, OBJ_DATA *obj,
+				ROOM_INDEX_DATA *room, CHAR_DATA *ch, 
+				const void *arg1, const void *arg2, int type ) );
+void	p_bribe_trigger  args( ( CHAR_DATA *mob, CHAR_DATA *ch, int amount ) );
+bool	p_exit_trigger   args( ( CHAR_DATA *ch, int dir, int type ) );
+void	p_give_trigger   args( ( CHAR_DATA *mob, OBJ_DATA *obj, 
+				ROOM_INDEX_DATA *room, CHAR_DATA *ch,
+				OBJ_DATA *dropped, int type ) );
+void 	p_greet_trigger  args( ( CHAR_DATA *ch, int type ) );
+void	p_hprct_trigger  args( ( CHAR_DATA *mob, CHAR_DATA *ch ) );
 
 /* mob_cmds.c */
 void    mob_interpret    args( ( CHAR_DATA *ch, char *argument ) );
+void    mob_interpret	 args( ( CHAR_DATA *ch, char *argument ) );
+// Add the following 2 lines
+void	obj_interpret	 args( ( OBJ_DATA *obj, char *argument ) );
+void    room_interpret	 args( ( ROOM_INDEX_DATA *room, char *argument ) );
 
 /* save.c */
 void    save_char_obj    args( ( CHAR_DATA *ch ) );

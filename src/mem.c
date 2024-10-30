@@ -34,6 +34,8 @@ extern int top_exit;
 extern int top_ed;
 extern int top_room;
 extern int top_mprog_index;
+extern int top_oprog_index;
+extern int top_rprog_index;
 
 AREA_DATA *area_free;
 EXIT_DATA *exit_free;
@@ -45,7 +47,9 @@ RESET_DATA *reset_free;
 
 void free_extra_descr args ((EXTRA_DESCR_DATA * pExtra));
 void free_affect args ((AFFECT_DATA * af));
-void free_mprog args ((MPROG_LIST * mp));
+void free_mprog args ((PROG_LIST * mp));
+void free_oprog args ( ( PROG_LIST *op ) );
+void free_rprog args ( ( PROG_LIST *rp ) );
 
 
 RESET_DATA *new_reset_data (void)
@@ -224,6 +228,7 @@ void free_room_index (ROOM_INDEX_DATA * pRoom)
     free_string (pRoom->name);
     free_string (pRoom->description);
     free_string (pRoom->owner);
+    free_rprog  (pRoom->rprogs);
 
     for (door = 0; door < MAX_DIR; door++)
     {
@@ -340,6 +345,7 @@ void free_obj_index (OBJ_INDEX_DATA * pObj)
     free_string (pObj->name);
     free_string (pObj->short_descr);
     free_string (pObj->description);
+    free_oprog  (pObj->oprogs);
 
     for (pAf = pObj->affected; pAf; pAf = pAf->next)
     {
@@ -438,11 +444,13 @@ void free_mob_index (MOB_INDEX_DATA * pMob)
     return;
 }
 
-MPROG_CODE *mpcode_free;
+PROG_CODE *mpcode_free;
+PROG_CODE *opcode_free;
+PROG_CODE *rpcode_free;
 
-MPROG_CODE *new_mpcode (void)
+PROG_CODE *new_mpcode (void)
 {
-    MPROG_CODE *NewCode;
+    PROG_CODE *NewCode;
 
     if (!mpcode_free)
     {
@@ -462,10 +470,70 @@ MPROG_CODE *new_mpcode (void)
     return NewCode;
 }
 
-void free_mpcode (MPROG_CODE * pMcode)
+void free_mpcode (PROG_CODE * pMcode)
 {
     free_string (pMcode->code);
     pMcode->next = mpcode_free;
     mpcode_free = pMcode;
+    return;
+}
+
+PROG_CODE *new_opcode(void)
+{
+     PROG_CODE *NewCode;
+
+     if (!rpcode_free)
+     {
+         NewCode = alloc_perm(sizeof(*NewCode) );
+         top_oprog_index++;
+     }
+     else
+     {
+         NewCode     = opcode_free;
+         opcode_free = opcode_free->next;
+     }
+
+     NewCode->vnum    = 0;
+     NewCode->code    = str_dup("");
+     NewCode->next    = NULL;
+
+     return NewCode;
+}
+
+PROG_CODE *new_rpcode(void)
+{
+     PROG_CODE *NewCode;
+
+     if (!rpcode_free)
+     {
+         NewCode = alloc_perm(sizeof(*NewCode) );
+         top_rprog_index++;
+     }
+     else
+     {
+         NewCode     = rpcode_free;
+         rpcode_free = rpcode_free->next;
+     }
+
+     NewCode->vnum    = 0;
+     NewCode->code    = str_dup("");
+     NewCode->next    = NULL;
+
+     return NewCode;
+}
+
+void free_opcode(PROG_CODE *pOcode)
+{
+    free_string(pOcode->code);
+    pOcode->next = opcode_free;
+    opcode_free  = pOcode;
+    return;
+}
+
+void free_rpcode(PROG_CODE *pRcode)
+{
+    free_string(pRcode->code);
+    pRcode->next = rpcode_free;
+    rpcode_free  = pRcode;
     return;
 }

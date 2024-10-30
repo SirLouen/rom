@@ -1,7 +1,7 @@
 #PLAYER
 Name Shemp~
 Id   1526675897
-LogO 1730161816
+LogO 1730249377
 Vers 5
 Prom <%hhp %mm %vmv> ~
 Race human~
@@ -9,16 +9,16 @@ Sex  1
 Cla  3
 Levl 60
 Sec  0
-Plyd 5343
+Plyd 7993
 Scro 22
-Room 3026
-HMV  49 49 122 122 91 106
+Room 3005
+HMV  29 29 102 102 106 106
 Gold 1000
 Silv 1000
 Exp  2088
 Act  QT
 Comm DNOP
-Pos  8
+Pos  6
 Prac 1
 Trai 1
 Save  -1
@@ -108,14 +108,6 @@ Nest 0
 Cond 0
 Wear -1
 Cost 500
-End
-
-#O
-Vnum 3379
-Nest 0
-Cond 0
-Wear 16
-Cost 0
 End
 
 #O

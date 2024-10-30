@@ -1125,7 +1125,7 @@ void do_look (CHAR_DATA * ch, char *argument)
             return;
         }
 
-        if ((obj = get_obj_here (ch, arg2)) == NULL)
+        if ((obj = get_obj_here( ch, NULL, arg2 )) == NULL)
         {
             send_to_char ("You do not see that here.\n\r", ch);
             return;
@@ -1170,7 +1170,7 @@ void do_look (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((victim = get_char_room (ch, arg1)) != NULL)
+    if ((victim = get_char_room( ch, NULL, arg1 )) != NULL)
     {
         show_char_to_char_1 (victim, ch);
         return;
@@ -1333,7 +1333,7 @@ void do_examine (CHAR_DATA * ch, char *argument)
 
     do_function (ch, &do_look, arg);
 
-    if ((obj = get_obj_here (ch, arg)) != NULL)
+    if ((obj = get_obj_here( ch, NULL, arg )) != NULL)
     {
         switch (obj->item_type)
         {
@@ -2481,7 +2481,7 @@ void do_consider (CHAR_DATA * ch, char *argument)
         return;
     }
 
-    if ((victim = get_char_room (ch, arg)) == NULL)
+    if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They're not here.\n\r", ch);
         return;

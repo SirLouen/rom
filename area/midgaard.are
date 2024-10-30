@@ -2883,6 +2883,14 @@ E
 maravillosa blade~
  Here, the most Maravillosa sword in the World
 ~
+O act 3001 sits down~
+#0
+
+#OBJPROGS
+#3001
+obj echo shoot out of $i, impailing your back!
+obj damage $n 50 50
+~
 #0
 
 #ROOMS

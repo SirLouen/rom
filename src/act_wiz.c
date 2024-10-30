@@ -2353,7 +2353,7 @@ void do_clone (CHAR_DATA * ch, char *argument)
     if (!str_prefix (arg, "object"))
     {
         mob = NULL;
-        obj = get_obj_here (ch, rest);
+        obj = get_obj_here( ch, NULL, rest );
         if (obj == NULL)
         {
             send_to_char ("You don't see that here.\n\r", ch);
@@ -2363,7 +2363,7 @@ void do_clone (CHAR_DATA * ch, char *argument)
     else if (!str_prefix (arg, "mobile") || !str_prefix (arg, "character"))
     {
         obj = NULL;
-        mob = get_char_room (ch, rest);
+        mob = get_char_room( ch, NULL, rest );
         if (mob == NULL)
         {
             send_to_char ("You don't see that here.\n\r", ch);
@@ -2373,8 +2373,8 @@ void do_clone (CHAR_DATA * ch, char *argument)
     else
     {                            /* find both */
 
-        mob = get_char_room (ch, argument);
-        obj = get_obj_here (ch, argument);
+        mob = get_char_room( ch, NULL, argument );
+        obj = get_obj_here( ch, NULL, argument );
         if (mob == NULL && obj == NULL)
         {
             send_to_char ("You don't see that here.\n\r", ch);

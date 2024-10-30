@@ -445,17 +445,17 @@ void mobile_update (void)
         if (ch->position == ch->pIndexData->default_pos)
         {
             /* Delay */
-            if (HAS_TRIGGER (ch, TRIG_DELAY) && ch->mprog_delay > 0)
+            if (HAS_TRIGGER_MOB (ch, TRIG_DELAY) && ch->mprog_delay > 0)
             {
                 if (--ch->mprog_delay <= 0)
                 {
-                    mp_percent_trigger (ch, NULL, NULL, NULL, TRIG_DELAY);
+                    p_percent_trigger( ch, NULL, NULL, NULL, NULL, NULL, TRIG_DELAY );
                     continue;
                 }
             }
-            if (HAS_TRIGGER (ch, TRIG_RANDOM))
+            if (HAS_TRIGGER_MOB (ch, TRIG_RANDOM))
             {
-                if (mp_percent_trigger (ch, NULL, NULL, NULL, TRIG_RANDOM))
+                if (p_percent_trigger( ch, NULL, NULL, NULL, NULL, NULL, TRIG_RANDOM ))
                     continue;
             }
         }
@@ -961,6 +961,21 @@ void obj_update (void)
             }
         }
 
+        if ( obj->in_room || (obj->carried_by && obj->carried_by->in_room))
+	    {
+            if ( HAS_TRIGGER_OBJ( obj, TRIG_DELAY )
+            && obj->oprog_delay > 0 )
+            {
+                if ( --obj->oprog_delay <= 0 )
+                p_percent_trigger( NULL, obj, NULL, NULL, NULL, NULL, TRIG_DELAY );
+            }
+            else if ( ((obj->in_room && !obj->in_room->area->empty)
+                || obj->carried_by ) && HAS_TRIGGER_OBJ( obj, TRIG_RANDOM ) )
+                p_percent_trigger( NULL, obj, NULL, NULL, NULL, NULL, TRIG_RANDOM );
+	    }
+	    /* Make sure the object is still there before proceeding */
+	    if ( !obj )
+	        continue;
 
         if (obj->timer <= 0 || --obj->timer > 0)
             continue;

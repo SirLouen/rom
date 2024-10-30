@@ -360,6 +360,13 @@ const struct cmd_type cmd_table[] = {
     {"mpdump",		do_mpdump,	POS_DEAD, IM, LOG_NEVER, 1},
     {"mpstat",		do_mpstat,	POS_DEAD, IM, LOG_NEVER, 1},
 
+    { "opedit",     do_opedit,  POS_DEAD, L6, LOG_ALWAYS, 1 },
+    { "rpedit",     do_rpedit,  POS_DEAD, L6, LOG_ALWAYS, 1 },
+    { "opdump",		do_opdump,	POS_DEAD, IM, LOG_NEVER,  1 },
+    { "opstat",		do_opstat,	POS_DEAD, IM, LOG_NEVER,  1 },
+    { "rpdump",		do_rpdump,	POS_DEAD, IM, LOG_NEVER,  1 },
+    { "rpstat",		do_rpstat,	POS_DEAD, IM, LOG_NEVER,  1 },
+
     /*
      * OLC
      */
@@ -634,7 +641,7 @@ bool check_social (CHAR_DATA * ch, char *command, char *argument)
         act (social_table[cmd].others_no_arg, ch, NULL, victim, TO_ROOM);
         act (social_table[cmd].char_no_arg, ch, NULL, victim, TO_CHAR);
     }
-    else if ((victim = get_char_room (ch, arg)) == NULL)
+    else if ((victim = get_char_room( ch, NULL, arg )) == NULL)
     {
         send_to_char ("They aren't here.\n\r", ch);
     }

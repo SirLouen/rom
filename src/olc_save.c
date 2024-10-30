@@ -152,14 +152,14 @@ char *fwrite_flag (long flags, char buf[])
 
 void save_mobprogs (FILE * fp, AREA_DATA * pArea)
 {
-    MPROG_CODE *pMprog;
+    PROG_CODE *pMprog;
     int i;
 
     fprintf (fp, "#MOBPROGS\n");
 
     for (i = pArea->min_vnum; i <= pArea->max_vnum; i++)
     {
-        if ((pMprog = get_mprog_index (i)) != NULL)
+        if ((pMprog = get_prog_index( i, PRG_MPROG )) != NULL)
         {
             fprintf (fp, "#%d\n", i);
             fprintf (fp, "%s~\n", fix_string (pMprog->code));
@@ -170,6 +170,46 @@ void save_mobprogs (FILE * fp, AREA_DATA * pArea)
     return;
 }
 
+void save_objprogs( FILE *fp, AREA_DATA *pArea )
+{
+	PROG_CODE *pOprog;
+        int i;
+
+        fprintf(fp, "#OBJPROGS\n");
+
+	for( i = pArea->min_vnum; i <= pArea->max_vnum; i++ )
+        {
+          if ( (pOprog = get_prog_index(i, PRG_OPROG) ) != NULL)
+		{
+		          fprintf(fp, "#%d\n", i);
+		          fprintf(fp, "%s~\n", fix_string(pOprog->code));
+		}
+        }
+
+        fprintf(fp,"#0\n\n");
+        return;
+}
+
+void save_roomprogs( FILE *fp, AREA_DATA *pArea )
+{
+	PROG_CODE *pRprog;
+        int i;
+
+        fprintf(fp, "#ROOMPROGS\n");
+
+	for( i = pArea->min_vnum; i <= pArea->max_vnum; i++ )
+        {
+          if ( (pRprog = get_prog_index(i,PRG_RPROG) ) != NULL)
+		{
+		          fprintf(fp, "#%d\n", i);
+		          fprintf(fp, "%s~\n", fix_string(pRprog->code));
+		}
+        }
+
+        fprintf(fp,"#0\n\n");
+        return;
+}
+
 /*****************************************************************************
  Name:        save_mobile
  Purpose:    Save one mobile to file, new format -- Hugin
@@ -178,7 +218,7 @@ void save_mobprogs (FILE * fp, AREA_DATA * pArea)
 void save_mobile (FILE * fp, MOB_INDEX_DATA * pMobIndex)
 {
     sh_int race = pMobIndex->race;
-    MPROG_LIST *pMprog;
+    PROG_LIST *pMprog;
     char buf[MAX_STRING_LENGTH];
     long temp;
 
@@ -247,7 +287,7 @@ void save_mobile (FILE * fp, MOB_INDEX_DATA * pMobIndex)
     for (pMprog = pMobIndex->mprogs; pMprog; pMprog = pMprog->next)
     {
         fprintf (fp, "M %s %d %s~\n",
-                 mprog_type_to_name (pMprog->trig_type), pMprog->vnum,
+                 prog_type_to_name( pMprog->trig_type ), pMprog->vnum,
                  pMprog->trig_phrase);
     }
 
@@ -294,6 +334,7 @@ void save_object (FILE * fp, OBJ_INDEX_DATA * pObjIndex)
     AFFECT_DATA *pAf;
     EXTRA_DESCR_DATA *pEd;
     char buf[MAX_STRING_LENGTH];
+    PROG_LIST *pOprog;
 
     fprintf (fp, "#%d\n", pObjIndex->vnum);
     fprintf (fp, "%s~\n", pObjIndex->name);
@@ -436,6 +477,13 @@ void save_object (FILE * fp, OBJ_INDEX_DATA * pObjIndex)
                  fix_string (pEd->description));
     }
 
+    for (pOprog = pObjIndex->oprogs; pOprog; pOprog = pOprog->next)
+    {
+        fprintf(fp, "O %s %d %s~\n",
+        prog_type_to_name(pOprog->trig_type), pOprog->vnum,
+                pOprog->trig_phrase);
+    }
+
     return;
 }
 
@@ -481,6 +529,7 @@ void save_rooms (FILE * fp, AREA_DATA * pArea)
     EXIT_DATA *pExit;
     int iHash;
     int door;
+    PROG_LIST *pRprog;
 
     fprintf (fp, "#ROOMS\n");
     for (iHash = 0; iHash < MAX_KEY_HASH; iHash++)
@@ -561,6 +610,13 @@ void save_rooms (FILE * fp, AREA_DATA * pArea)
 
                 if (!IS_NULLSTR (pRoomIndex->owner))
                     fprintf (fp, "O %s~\n", pRoomIndex->owner);
+
+                for (pRprog = pRoomIndex->rprogs; pRprog; pRprog = pRprog->next)
+                {
+	                fprintf(fp, "R %s %d %s~\n",
+	                prog_type_to_name(pRprog->trig_type), pRprog->vnum,
+	                pRprog->trig_phrase);
+                }
 
                 fprintf (fp, "S\n");
             }
@@ -906,6 +962,8 @@ void save_area (AREA_DATA * pArea)
     save_resets (fp, pArea);
     save_shops (fp, pArea);
     save_mobprogs (fp, pArea);
+    save_objprogs( fp, pArea );
+    save_roomprogs( fp, pArea );
 
     if (pArea->helps && pArea->helps->first)
         save_helps (fp, pArea->helps);

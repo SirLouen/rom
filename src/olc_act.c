@@ -113,6 +113,8 @@ const struct olc_help_type help_table[] = {
     {"apptype", apply_types, "Apply types."},
     {"weapon", attack_table, "Weapon types."},
     {"mprog", mprog_flags, "MobProgram flags."},
+    {"oprog", oprog_flags, "ObjProgram flags." },
+    {"rprog", rprog_flags, "RoomProgram flags." },
     {NULL, NULL, NULL}
 };
 
@@ -1072,6 +1074,7 @@ REDIT (redit_show)
     char buf1[2 * MAX_STRING_LENGTH];
     OBJ_DATA *obj;
     CHAR_DATA *rch;
+    PROG_LIST *list;
     int door;
     bool fcnt;
 
@@ -1232,6 +1235,30 @@ REDIT (redit_show)
     }
 
     send_to_char (buf1, ch);
+
+    if ( pRoom->rprogs )
+    {
+        int cnt;
+
+        sprintf(buf, "\n\rROOMPrograms for [%5d]:\n\r", pRoom->vnum);
+        send_to_char( buf, ch );
+
+        for (cnt=0, list=pRoom->rprogs; list; list=list->next)
+        {
+            if (cnt ==0)
+            {
+                send_to_char ( " Number Vnum Trigger Phrase\n\r", ch );
+                send_to_char ( " ------ ---- ------- ------\n\r", ch );
+            }
+
+            sprintf(buf, "[%5d] %4d %7s %s\n\r", cnt,
+                list->vnum,prog_type_to_name(list->trig_type),
+                list->trig_phrase);
+            send_to_char( buf, ch );
+            cnt++;
+        }
+    }
+
     return FALSE;
 }
 
@@ -2089,7 +2116,7 @@ REDIT (redit_oreset)
         /*
          * Load into mobile's inventory.
          */
-    if ((to_mob = get_char_room (ch, arg2)) != NULL)
+    if ((to_mob = get_char_room( ch, NULL, arg2 )) != NULL)
     {
         int wear_loc;
 
@@ -2735,6 +2762,7 @@ OEDIT (oedit_show)
     OBJ_INDEX_DATA *pObj;
     char buf[MAX_STRING_LENGTH];
     AFFECT_DATA *paf;
+    PROG_LIST *list;
     int cnt;
 
     EDIT_OBJ (ch, pObj);
@@ -2807,6 +2835,29 @@ OEDIT (oedit_show)
     }
 
     show_obj_values (ch, pObj);
+
+    if ( pObj->oprogs )
+    {
+	int cnt;
+
+	sprintf(buf, "\n\rOBJPrograms for [%5d]:\n\r", pObj->vnum);
+	send_to_char( buf, ch );
+
+	for (cnt=0, list=pObj->oprogs; list; list=list->next)
+	{
+		if (cnt ==0)
+		{
+			send_to_char ( " Number Vnum Trigger Phrase\n\r", ch );
+			send_to_char ( " ------ ---- ------- ------\n\r", ch );
+		}
+
+		sprintf(buf, "[%5d] %4d %7s %s\n\r", cnt,
+			list->vnum,prog_type_to_name(list->trig_type),
+			list->trig_phrase);
+		send_to_char( buf, ch );
+		cnt++;
+	}
+    }
 
     return FALSE;
 }
@@ -3520,7 +3571,7 @@ MEDIT (medit_show)
 {
     MOB_INDEX_DATA *pMob;
     char buf[MAX_STRING_LENGTH];
-    MPROG_LIST *list;
+    PROG_LIST *list;
 
     EDIT_MOB (ch, pMob);
 
@@ -3689,7 +3740,7 @@ MEDIT (medit_show)
             }
 
             sprintf (buf, "[%5d] %4d %7s %s\n\r", cnt,
-                     list->vnum, mprog_type_to_name (list->trig_type),
+                     list->vnum, prog_type_to_name( list->trig_type ),
                      list->trig_phrase);
             send_to_char (buf, ch);
             cnt++;
@@ -4865,8 +4916,8 @@ MEDIT (medit_addmprog)
 {
     int value;
     MOB_INDEX_DATA *pMob;
-    MPROG_LIST *list;
-    MPROG_CODE *code;
+    PROG_LIST *list;
+    PROG_CODE *code;
     char trigger[MAX_STRING_LENGTH];
     char phrase[MAX_STRING_LENGTH];
     char num[MAX_STRING_LENGTH];
@@ -4889,7 +4940,7 @@ MEDIT (medit_addmprog)
         return FALSE;
     }
 
-    if ((code = get_mprog_index (atoi (num))) == NULL)
+    if ((code = get_prog_index( atoi (num), PRG_MPROG )) == NULL)
     {
         send_to_char ("No such MOBProgram.\n\r", ch);
         return FALSE;
@@ -4911,8 +4962,8 @@ MEDIT (medit_addmprog)
 MEDIT (medit_delmprog)
 {
     MOB_INDEX_DATA *pMob;
-    MPROG_LIST *list;
-    MPROG_LIST *list_next;
+    PROG_LIST *list;
+    PROG_LIST *list_next;
     char mprog[MAX_STRING_LENGTH];
     int value;
     int cnt = 0;
@@ -5003,5 +5054,221 @@ REDIT (redit_sector)
     room->sector_type = value;
     send_to_char ("Sector type set.\n\r", ch);
 
+    return TRUE;
+}
+
+OEDIT ( oedit_addoprog )
+{
+  int value;
+  OBJ_INDEX_DATA *pObj;
+  PROG_LIST *list;
+  PROG_CODE *code;
+  char trigger[MAX_STRING_LENGTH];
+  char phrase[MAX_STRING_LENGTH];
+  char num[MAX_STRING_LENGTH];
+
+  EDIT_OBJ(ch, pObj);
+  argument=one_argument(argument, num);
+  argument=one_argument(argument, trigger);
+  argument=one_argument(argument, phrase);
+
+  if (!is_number(num) || trigger[0] =='\0' || phrase[0] =='\0' )
+  {
+        send_to_char("Syntax:   addoprog [vnum] [trigger] [phrase]\n\r",ch);
+        return FALSE;
+  }
+
+  if ( (value = flag_value (oprog_flags, trigger) ) == NO_FLAG)
+  {
+        send_to_char("Valid flags are:\n\r",ch);
+        show_help( ch, "oprog");
+        return FALSE;
+  }
+
+  if ( ( code =get_prog_index (atoi(num), PRG_OPROG ) ) == NULL)
+  {
+        send_to_char("No such OBJProgram.\n\r",ch);
+        return FALSE;
+  }
+
+  list                  = new_oprog();
+  list->vnum            = atoi(num);
+  list->trig_type       = value;
+  list->trig_phrase     = str_dup(phrase);
+  list->code            = code->code;
+  SET_BIT(pObj->oprog_flags,value);
+  list->next            = pObj->oprogs;
+  pObj->oprogs          = list;
+
+  send_to_char( "Oprog Added.\n\r",ch);
+  return TRUE;
+}
+
+OEDIT ( oedit_deloprog )
+{
+    OBJ_INDEX_DATA *pObj;
+    PROG_LIST *list;
+    PROG_LIST *list_next;
+    char oprog[MAX_STRING_LENGTH];
+    int value;
+    int cnt = 0;
+
+    EDIT_OBJ(ch, pObj);
+
+    one_argument( argument, oprog );
+    if (!is_number( oprog ) || oprog[0] == '\0' )
+    {
+       send_to_char("Syntax:  deloprog [#oprog]\n\r",ch);
+       return FALSE;
+    }
+
+    value = atoi ( oprog );
+
+    if ( value < 0 )
+    {
+        send_to_char("Only non-negative oprog-numbers allowed.\n\r",ch);
+        return FALSE;
+    }
+
+    if ( !(list= pObj->oprogs) )
+    {
+        send_to_char("OEdit:  Non existant oprog.\n\r",ch);
+        return FALSE;
+    }
+
+    if ( value == 0 )
+    {
+	REMOVE_BIT(pObj->oprog_flags, pObj->oprogs->trig_type);
+        list = pObj->oprogs;
+        pObj->oprogs = list->next;
+        free_oprog( list );
+    }
+    else
+    {
+        while ( (list_next = list->next) && (++cnt < value ) )
+                list = list_next;
+
+        if ( list_next )
+        {
+		REMOVE_BIT(pObj->oprog_flags, list_next->trig_type);
+                list->next = list_next->next;
+                free_oprog(list_next);
+        }
+        else
+        {
+                send_to_char("No such oprog.\n\r",ch);
+                return FALSE;
+        }
+    }
+
+    send_to_char("Oprog removed.\n\r", ch);
+    return TRUE;
+}
+
+REDIT ( redit_addrprog )
+{
+  int value;
+  ROOM_INDEX_DATA *pRoom;
+  PROG_LIST *list;
+  PROG_CODE *code;
+  char trigger[MAX_STRING_LENGTH];
+  char phrase[MAX_STRING_LENGTH];
+  char num[MAX_STRING_LENGTH];
+
+  EDIT_ROOM(ch, pRoom);
+  argument=one_argument(argument, num);
+  argument=one_argument(argument, trigger);
+  argument=one_argument(argument, phrase);
+
+  if (!is_number(num) || trigger[0] =='\0' || phrase[0] =='\0' )
+  {
+        send_to_char("Syntax:   addrprog [vnum] [trigger] [phrase]\n\r",ch);
+        return FALSE;
+  }
+
+  if ( (value = flag_value (rprog_flags, trigger) ) == NO_FLAG)
+  {
+        send_to_char("Valid flags are:\n\r",ch);
+        show_help( ch, "rprog");
+        return FALSE;
+  }
+
+  if ( ( code =get_prog_index (atoi(num), PRG_RPROG ) ) == NULL)
+  {
+        send_to_char("No such ROOMProgram.\n\r",ch);
+        return FALSE;
+  }
+
+  list                  = new_rprog();
+  list->vnum            = atoi(num);
+  list->trig_type       = value;
+  list->trig_phrase     = str_dup(phrase);
+  list->code            = code->code;
+  SET_BIT(pRoom->rprog_flags,value);
+  list->next            = pRoom->rprogs;
+  pRoom->rprogs          = list;
+
+  send_to_char( "Rprog Added.\n\r",ch);
+  return TRUE;
+}
+
+REDIT ( redit_delrprog )
+{
+    ROOM_INDEX_DATA *pRoom;
+    PROG_LIST *list;
+    PROG_LIST *list_next;
+    char rprog[MAX_STRING_LENGTH];
+    int value;
+    int cnt = 0;
+
+    EDIT_ROOM(ch, pRoom);
+
+    one_argument( argument, rprog );
+    if (!is_number( rprog ) || rprog[0] == '\0' )
+    {
+       send_to_char("Syntax:  delrprog [#rprog]\n\r",ch);
+       return FALSE;
+    }
+
+    value = atoi ( rprog );
+
+    if ( value < 0 )
+    {
+        send_to_char("Only non-negative rprog-numbers allowed.\n\r",ch);
+        return FALSE;
+    }
+
+    if ( !(list= pRoom->rprogs) )
+    {
+        send_to_char("REdit:  Non existant rprog.\n\r",ch);
+        return FALSE;
+    }
+
+    if ( value == 0 )
+    {
+	REMOVE_BIT(pRoom->rprog_flags, pRoom->rprogs->trig_type);
+        list = pRoom->rprogs;
+        pRoom->rprogs = list->next;
+        free_rprog( list );
+    }
+    else
+    {
+        while ( (list_next = list->next) && (++cnt < value ) )
+                list = list_next;
+
+        if ( list_next )
+        {
+		REMOVE_BIT(pRoom->rprog_flags, list_next->trig_type);
+                list->next = list_next->next;
+                free_rprog(list_next);
+        }
+        else
+        {
+                send_to_char("No such rprog.\n\r",ch);
+                return FALSE;
+        }
+    }
+
+    send_to_char("Rprog removed.\n\r", ch);
     return TRUE;
 }

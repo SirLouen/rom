@@ -615,12 +615,14 @@ char *buf_string (BUFFER * buffer)
 }
 
 /* stuff for recycling mobprograms */
-MPROG_LIST *mprog_free;
+PROG_LIST *mprog_free;
+PROG_LIST *oprog_free;
+PROG_LIST *rprog_free;
 
-MPROG_LIST *new_mprog (void)
+PROG_LIST *new_mprog (void)
 {
-    static MPROG_LIST mp_zero;
-    MPROG_LIST *mp;
+    static PROG_LIST mp_zero;
+    PROG_LIST *mp;
 
     if (mprog_free == NULL)
         mp = alloc_perm (sizeof (*mp));
@@ -638,7 +640,7 @@ MPROG_LIST *new_mprog (void)
     return mp;
 }
 
-void free_mprog (MPROG_LIST * mp)
+void free_mprog (PROG_LIST * mp)
 {
     if (!IS_VALID (mp))
         return;
@@ -691,4 +693,66 @@ void free_help (HELP_DATA * help)
     free_string (help->text);
     help->next = help_free;
     help_free = help;
+}
+
+PROG_LIST *new_oprog(void)
+{
+   static PROG_LIST op_zero;
+   PROG_LIST *op;
+
+   if (oprog_free == NULL)
+       op = alloc_perm(sizeof(*op));
+   else
+   {
+       op = oprog_free;
+       oprog_free=oprog_free->next;
+   }
+
+   *op = op_zero;
+   op->vnum             = 0;
+   op->trig_type        = 0;
+   op->code             = str_dup("");
+   VALIDATE(op);
+   return op;
+}
+
+void free_oprog(PROG_LIST *op)
+{
+   if (!IS_VALID(op))
+      return;
+
+   INVALIDATE(op);
+   op->next = oprog_free;
+   oprog_free = op;
+}
+
+PROG_LIST *new_rprog(void)
+{
+   static PROG_LIST rp_zero;
+   PROG_LIST *rp;
+
+   if (rprog_free == NULL)
+       rp = alloc_perm(sizeof(*rp));
+   else
+   {
+       rp = rprog_free;
+       rprog_free=rprog_free->next;
+   }
+
+   *rp = rp_zero;
+   rp->vnum             = 0;
+   rp->trig_type        = 0;
+   rp->code             = str_dup("");
+   VALIDATE(rp);
+   return rp;
+}
+
+void free_rprog(PROG_LIST *rp)
+{
+   if (!IS_VALID(rp))
+      return;
+
+   INVALIDATE(rp);
+   rp->next = rprog_free;
+   rprog_free = rp;
 }
