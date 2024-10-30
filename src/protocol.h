@@ -267,6 +267,7 @@ typedef struct
    char     *pMXPVersion;      /* The version of MXP supported */
    char     *pLastTTYPE;       /* Used for the cyclic TTYPE check */
    MSDP_t  **pVariables;       /* The MSDP variables */
+   bool_t    bMXPVersionShown;
 } protocol_t;
 
 /******************************************************************************

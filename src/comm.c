@@ -1948,7 +1948,10 @@ void stop_idling (CHAR_DATA * ch)
         || ch->desc == NULL
         || ch->desc->connected != CON_PLAYING
         || ch->was_in_room == NULL
-        || ch->in_room != get_room_index (ROOM_VNUM_LIMBO)) return;
+        || ch->in_room != get_room_index (ROOM_VNUM_LIMBO))
+    { 
+        return;
+    }
 
     ch->timer = 0;
     char_from_room (ch);

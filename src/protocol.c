@@ -237,6 +237,7 @@ static bool_t MatchString           ( const char *apFirst, const char *apSecond 
 static bool_t PrefixString          ( const char *apPart, const char *apWhole );
 static bool_t IsNumber              ( const char *apString );
 static char  *AllocString           ( const char *apString );
+static void DebugMSDP               ( descriptor_t *apDescriptor, const char *message, const char *data );
 
 /******************************************************************************
  ANSI colour codes.
@@ -279,6 +280,7 @@ protocol_t *ProtocolCreate( void )
 {
    int i; /* Loop counter */
    protocol_t *pProtocol;
+   pProtocol->bMXPVersionShown = false;
 
    /* Called the first time we enter - make sure the table is correct */
    static bool_t bInit = false;
@@ -475,12 +477,16 @@ void ProtocolInput( descriptor_t *apDescriptor, char *apData, int aSize, char *a
             pProtocol->pMXPVersion = AllocString(pMXPTag);
          }
 
-         if ( strcmp(pProtocol->pMXPVersion, "Unknown") )
+         // Initialize in ProtocolCreate
+         pProtocol->bMXPVersionShown = false;
+
+         if (strcmp(pProtocol->pMXPVersion, "Unknown") && !pProtocol->bMXPVersionShown)
          {
             Write( apDescriptor, "\n" );
             sprintf( MXPBuffer, "MXP version %s detected and enabled.\r\n", 
                pProtocol->pMXPVersion );
             InfoMessage( apDescriptor, MXPBuffer );
+            pProtocol->bMXPVersionShown = true;
          }
       }
       else /* In-band command */
@@ -1172,19 +1178,32 @@ void MSDPUpdate( descriptor_t *apDescriptor )
 {
    int i; /* Loop counter */
 
-   protocol_t *pProtocol = apDescriptor ? apDescriptor->pProtocol : NULL;
+    protocol_t *pProtocol = apDescriptor ? apDescriptor->pProtocol : NULL;
+    
+    if (!pProtocol) {
+        DebugMSDP(apDescriptor, "Update", "No protocol structure");
+        return;
+    }
 
+    DebugMSDP(apDescriptor, "Update Start", "Processing variables");
+    
    for ( i = eMSDP_NONE+1; i < eMSDP_MAX; ++i )
    {
       if ( pProtocol->pVariables[i]->bReport )
       {
          if ( pProtocol->pVariables[i]->bDirty )
          {
-            MSDPSend( apDescriptor, (variable_t)i );
-            pProtocol->pVariables[i]->bDirty = false;
-         }
-      }
-   }
+                char debugBuf[256];
+                sprintf(debugBuf, "Sending variable %s", VariableNameTable[i].pName);
+                DebugMSDP(apDescriptor, debugBuf, 
+                         pProtocol->pVariables[i]->pValueString ? 
+                         pProtocol->pVariables[i]->pValueString : "NULL");
+                
+                MSDPSend( apDescriptor, (variable_t)i );
+                pProtocol->pVariables[i]->bDirty = false;
+            }
+        }
+    }
 }
 
 void MSDPFlush( descriptor_t *apDescriptor, variable_t aMSDP )
@@ -1206,12 +1225,32 @@ void MSDPFlush( descriptor_t *apDescriptor, variable_t aMSDP )
 
 void MSDPSend( descriptor_t *apDescriptor, variable_t aMSDP )
 {
-   char MSDPBuffer[MAX_VARIABLE_LENGTH+1] = { '\0' };
+      char MSDPBuffer[MAX_VARIABLE_LENGTH+1] = { '\0' };
+
+      protocol_t *pProtocol = apDescriptor ? apDescriptor->pProtocol : NULL;
+
+   if (!apDescriptor) {
+        DebugMSDP(NULL, "Send", "NULL descriptor");
+        return;
+    }
+
+    if (!pProtocol) {
+        DebugMSDP(apDescriptor, "Send", "NULL protocol");
+        return;
+    }
+
+    // Add debug before sending
+    char debugBuf[256];
+    sprintf(debugBuf, "Sending MSDP variable %s", 
+            VariableNameTable[aMSDP].pName);
+    DebugMSDP(apDescriptor, debugBuf, 
+             pProtocol->pVariables[aMSDP]->pValueString ? 
+             pProtocol->pVariables[aMSDP]->pValueString : "NULL");
+
+
 
    if ( aMSDP > eMSDP_NONE && aMSDP < eMSDP_MAX )
    {
-      protocol_t *pProtocol = apDescriptor ? apDescriptor->pProtocol : NULL;
-
       if ( VariableNameTable[aMSDP].bString )
       {
          /* Should really be replaced with a dynamic buffer */
@@ -1229,6 +1268,11 @@ void MSDPSend( descriptor_t *apDescriptor, variable_t aMSDP )
          }
          else if ( pProtocol->bMSDP )
          {
+            DebugMSDP(apDescriptor, "Init", "MSDP Enabled");
+            // Initialize default variables
+            MSDPSendPair(apDescriptor, "SERVER_ID", "ROM MP");
+            MSDPSendPair(apDescriptor, "SERVER_TIME", "1");
+
             sprintf( MSDPBuffer, "%c%c%c%c%s%c%s%c%c", 
                IAC, SB, TELOPT_MSDP, MSDP_VAR, 
                VariableNameTable[aMSDP].pName, MSDP_VAL, 
@@ -2949,7 +2993,7 @@ static char *AllocString( const char *apString )
    return pResult;
 }
 
-void DebugMSDP(descriptor_t *apDescriptor, const char *message, const char *data) {
+static void DebugMSDP(descriptor_t *apDescriptor, const char *message, const char *data) {
     char buf[MAX_STRING_LENGTH];
     sprintf(buf, "MSDP Debug [%s]: %s\n", message, data);
     log_string(buf);
