@@ -29,9 +29,17 @@ Now you can connect to the MUD using a MUD client or telnet, through the port 40
 You are shipped by default with the first immortal account by default. 
 It's a level 60 Immortal named `Shemp` is included with a password of `psswrd`.
 
+## Contribution
+
+If you want to contribute to this project, you can start right away checking our [features Roadmap](https://github.com/users/SirLouen/projects/1), or if you find any bug you can send a PR for review.
+
 ## Recent Changes
 
-### Directory Structure
+1. **Path Restructuring**
+   - Moved executables to `bin/` directory
+   - Updated all relative paths
+   - Fixed path resolution issues
+
 The codebase has been reorganized for better maintainability:
 
 rom/
@@ -55,12 +63,6 @@ rom/
 ├── player/ # Player files
 
 └── src/ # Source code
-
-### First Updates
-1. **Path Restructuring**
-   - Moved executables to `bin/` directory
-   - Updated all relative paths
-   - Fixed path resolution issues
 
 2. **Bug Fixes**
    - Fixed FNDELAY deprecated flag with O_NONBLOCK
