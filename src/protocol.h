@@ -79,6 +79,28 @@ typedef struct descriptor_data descriptor_t;
 #define TELOPT_MXP                     91
 #define TELOPT_ATCP                    200
 
+/*************** START GMCP ***************/
+#define TELOPT_GMCP                    201
+
+/* UNCOMMENT the line below if your color code is '{'. */
+/*
+#define COLOR_CODE_FIX
+*/
+
+/* These constants are used to send Discord information to the client, set appropriately.
+https://wiki.mudlet.org/w/Standards:Discord_GMCP */
+
+#define DISCORD_INVITE_URL ""
+#define DISCORD_APPLICACTION_ID ""
+#define DISCORD_ICON_1 ""
+#define DISCORD_ICON_2 ""
+#define DISCORD_ICON_3 ""
+#define DISCORD_SMALL_IMAGE_TEXT ""
+#define DISCORD_DETAILS ""
+#define DISCORD_STATE ""
+
+/*************** END GMCP ***************/
+
 #define MSDP_VAR                       1
 #define MSDP_VAL                       2
 #define MSDP_TABLE_OPEN                3
@@ -117,6 +139,11 @@ typedef enum
    eNEGOTIATED_MXP, 
    eNEGOTIATED_MXP2, 
    eNEGOTIATED_MCCP, 
+
+	/*************** START GMCP ***************/
+	eNEGOTIATED_GMCP,
+	eNEGOTIATED_SGA,
+	/*************** END GMCP ***************/
 
    eNEGOTIATED_MAX             /* This must always be last */
 } negotiated_t;
@@ -213,6 +240,177 @@ typedef enum
    eMSDP_MAX                   /* This must always be last */
 } variable_t;
 
+/*************** START GMCP ***************/
+typedef enum
+{
+	JSMN_UNDEFINED = 0,
+	JSMN_OBJECT = 1,
+	JSMN_ARRAY = 2,
+	JSMN_STRING = 3,
+	JSMN_PRIMITIVE = 4
+} jsmntype_t;
+
+enum jsmnerr {
+	JSMN_ERROR_NOMEM = -1,	/* Not enough tokens were provided */
+	JSMN_ERROR_INVAL = -2,	/* Invalid character inside JSON string */
+	JSMN_ERROR_PART = -3	/* The string is not a full JSON packet, more bytes expected */
+};
+
+typedef struct
+{
+	jsmntype_t type;
+	int start;
+	int end;
+	int size;
+} jsmntok_t;
+
+typedef struct {
+	unsigned int pos;		/* offset in the JSON string */
+	unsigned int toknext;	/* next token to allocate */
+	int toksuper;			/* superior token node, e.g. parent object or array */
+} jsmn_parser;
+
+typedef enum
+{
+	GMCP_STRING,
+	GMCP_NUMBER,
+	GMCP_OBJECT,
+	GMCP_ARRAY
+} GMCP_TYPE;
+
+typedef enum
+{
+	GMCP_CORE_NONE = -1,
+	
+	GMCP_CORE_HELLO,
+	GMCP_CORE_SUPPORTS_SET,
+	GMCP_CORE_SUPPORTS_ADD,
+	GMCP_CORE_SUPPORTS_REMOVE,
+	GMCP_EXTERNAL_DISCORD_HELLO,
+	GMCP_EXTERNAL_DISCORD_GET,
+	GMCP_RECEIVE_MAX
+} GMCP_RECEIVE;
+
+typedef enum
+{
+	GMCP_SUPPORT_NONE = -1,
+	
+	GMCP_SUPPORT_CHAR,
+	GMCP_SUPPORT_ROOM,
+	GMCP_SUPPORT_MAX
+} GMCP_SUPPORT;
+
+typedef enum
+{
+	GMCP_NONE = -1,
+	
+	GMCP_BASE,
+	GMCP_VITALS,
+	GMCP_STATS,
+	GMCP_AC,
+	GMCP_WORTH,
+	GMCP_AFFECTED,
+	GMCP_ENEMIES,
+	GMCP_ROOM,
+	GMCP_PACKAGE_MAX
+} GMCP_PACKAGE;
+
+typedef enum
+{
+	GMCP_NULL	= -1,
+	
+	/* Hello */
+	GMCP_CLIENT,
+	GMCP_VERSION,
+
+	/* Base */
+	GMCP_NAME,
+	GMCP_RACE,
+	GMCP_CLASS,
+
+	/* Vitals */
+	GMCP_HP,
+	GMCP_MANA,
+	GMCP_MOVE,
+	GMCP_MAX_HP,
+	GMCP_MAX_MANA,
+	GMCP_MAX_MOVE,
+
+	/* Stats */
+	GMCP_STR,
+	GMCP_INT,
+	GMCP_WIS,
+	GMCP_DEX,
+	GMCP_CON,
+	GMCP_HITROLL,
+	GMCP_DAMROLL,
+	GMCP_STR_PERM,
+	GMCP_INT_PERM,
+	GMCP_WIS_PERM,
+	GMCP_DEX_PERM,
+	GMCP_CON_PERM,
+	GMCP_WIMPY,
+
+	/* AC */
+	GMCP_AC_PIERCE,
+	GMCP_AC_BASH,
+	GMCP_AC_SLASH,
+	GMCP_AC_EXOTIC,
+	
+	/* Worth */
+	GMCP_ALIGNMENT,
+	GMCP_XP,
+	GMCP_XP_MAX,
+	GMCP_XP_TNL,
+	GMCP_PRACTICE,
+	GMCP_MONEY,
+
+	/* Enemies */
+	GMCP_ENEMY,
+
+	/* Affected */
+	GMCP_AFFECT,
+
+	/* Room */
+	GMCP_AREA,
+	GMCP_ROOM_NAME,
+	GMCP_ROOM_EXITS,
+	GMCP_ROOM_VNUM,
+
+	GMCP_MAX
+
+} GMCP_VARIABLE;
+
+struct gmcp_receive_struct
+{
+	GMCP_RECEIVE		module;
+	char				*string;
+};
+
+struct gmcp_package_struct
+{
+	GMCP_PACKAGE		package;
+	GMCP_SUPPORT		support;
+	char				*module;
+	char				*message;
+	char				bSettable;
+};
+
+struct gmcp_support_struct
+{
+	GMCP_SUPPORT		module;
+	char				*name;
+};
+
+struct gmcp_variable_struct
+{
+	GMCP_VARIABLE		variable;
+	GMCP_PACKAGE		package;
+	char				*name;
+	GMCP_TYPE			type;
+};
+/*************** END GMCP ***************/
+
 typedef struct
 {
    variable_t   Variable;      /* The enum type of this variable */
@@ -267,7 +465,15 @@ typedef struct
    char     *pMXPVersion;      /* The version of MXP supported */
    char     *pLastTTYPE;       /* Used for the cyclic TTYPE check */
    MSDP_t  **pVariables;       /* The MSDP variables */
-   bool_t    bMXPVersionShown;
+
+	/*************** START GMCP ***************/
+	bool_t	bGMCP; /* The client supports GMCP */
+	bool_t	bSGA; /* The client supports SGA */
+	bool_t	bGMCPSupport[GMCP_SUPPORT_MAX]; /* The client supports specific modules */
+	bool_t	bGMCPUpdatePackage[GMCP_PACKAGE_MAX]; /* Send these packages to the client. */
+	char	*GMCPVariable[GMCP_MAX]; /* The message for each variable */
+	/*************** END GMCP ***************/
+
 } protocol_t;
 
 /******************************************************************************
@@ -585,5 +791,14 @@ char *UnicodeGet( int aValue );
  * string, without adding a NUL character at the end.
  */
 void UnicodeAdd( char **apString, int aValue );
+
+/*************** START GMCP ***************/
+extern const char GoAheadStr[];
+extern const char iac_sb_gmcp[];
+extern const char iac_se[];
+extern void SendUpdatedGMCP( descriptor_t *apDescriptor );
+extern void UpdateGMCPString( descriptor_t *apDescriptor, GMCP_VARIABLE var, const char *string );
+extern void UpdateGMCPNumber( descriptor_t *apDescriptor, GMCP_VARIABLE var, const long long number );
+/*************** END GMCP ***************/
 
 #endif /* PROTOCOL_H */

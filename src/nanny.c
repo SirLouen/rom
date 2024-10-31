@@ -756,7 +756,6 @@ void nanny (DESCRIPTOR_DATA * d, char *argument)
             ch->next = char_list;
             char_list = ch;
             d->connected = CON_PLAYING;
-            MXPSendTag( d, "<VERSION>" );
 
             reset_char (ch);
 

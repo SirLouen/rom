@@ -2264,7 +2264,7 @@ void p_act_trigger(
 			if ( prg->trig_type == type && strstr( argument, prg->trig_phrase ) != NULL )
 			{
 				// Debug only when trigger matches
-				bug("ACT trigger fired: vnum '%d'", prg->vnum);
+				log_f("ACT trigger fired: vnum '%d'", prg->vnum);
 				program_flow( prg->vnum, prg->code, NULL, obj, NULL, ch, arg1, arg2 );
 				break;
 			}
