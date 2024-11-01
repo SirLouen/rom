@@ -35,11 +35,7 @@ If you want to contribute to this project, you can start right away checking our
 
 ## Recent Changes
 
-1. **Path Restructuring**
-   - Moved executables to `bin/` directory
-   - Updated all relative paths
-   - Fixed path resolution issues
-
+### Directory Structure
 The codebase has been reorganized for better maintainability:
 
 rom/
@@ -63,6 +59,12 @@ rom/
 ├── player/ # Player files
 
 └── src/ # Source code
+
+### First Updates
+1. **Path Restructuring**
+   - Moved executables to `bin/` directory
+   - Updated all relative paths
+   - Fixed path resolution issues
 
 2. **Bug Fixes**
    - Fixed FNDELAY deprecated flag with O_NONBLOCK
@@ -89,7 +91,7 @@ rom/
 
 - [ ] **Improve docs and organize licensing files**
    - Update documentation for better understanding of the codebase
-   - Organize licensing files for better compliance
+   - Reorganize licensing files for better compliance with new LGPL license ([check License](#license))
 
 - [ ] **Code Refactoring and Further Directory Optimization**
    - Move area, player and gods files to a separate repository and implement a submodule
@@ -111,13 +113,16 @@ Any other suggestions are welcome!
 
 ## License
 
-This is based the ROM 2.4b6 version of Merc 2.1 and DikuMUD base code. Please read the licensing in the doc directory for more information.
+This is based the ROM 2.4b6 version of Merc 2.1 and DikuMUD base code. 
 
-All the changes and code added to the ROM Modernization Project are licensed under the MIT License.
+After the [release of LGPL version of DikuMUD](https://github.com/Seifert69/DikuMUD) all codebases dangling over DikuMUD original files become LGPL tansitively.
+Given that there are other files that are not original DikuMUD but they are supported on them (they are not completely independent code), they also transitively become LGPL
+
+With this even, all the changes and code added to the ROM Modernization Project are licensed also under the LGPL.
 
 ## Acknowledgements
 
-- Sebastian Hammer, [Michael Seifert](https://en.wikipedia.org/wiki/Michael_Seifert_(programmer)), Hans Henrik Starfeldt, Tom Madsen and Katja Nyboe for DikuMUD
+- Sebastian Hammer, [Michael Seifert](https://github.com/Seifert69), Hans Henrik Starfeldt, Tom Madsen and Katja Nyboe for [DikuMUD](https://github.com/Seifert69/DikuMUD)
 - Hatchet, Furey, and Kahn for Merc 2.1 codebase
 - Russ Taylor, Geoff Wong and Brian Moore for ROM 2.4 codebase
 - [Erwin S. Andreasen](https://andreasen.org) for the Copyover Patch, Multi-board note system and OLC

@@ -1,7 +1,3 @@
-/* Includes for board system */
-/* This is version 2 of the board system, (c) 1995-96 erwin@pip.dknet.dk */
-
-
 #define NOTE_DIR  				"../notes" /* set it to something you like */
 
 #define DEF_NORMAL  0 /* No forced change, but default (any string)   */
